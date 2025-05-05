@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Wallpaper</string>
-    <string name="app_title">Git Repo Search</string>
     <string name="app_search_title">Search by name or ID</string>
     <string name="lbl_search">Search</string>
     <string name="lbl_welcome">Welcome to</string>

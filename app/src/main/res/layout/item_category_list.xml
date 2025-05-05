@@ -19,7 +19,7 @@
             android:layout_height="@dimen/_100sdp"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_launcher_background"
-            style="@style/RectangularImageView"/>
+            />
 
     </LinearLayout>
 
