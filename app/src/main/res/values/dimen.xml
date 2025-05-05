@@ -1,0 +1,40 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <dimen name="padding_5dp">5dp</dimen>
+    <dimen name="padding_10dp">10dp</dimen>
+    <dimen name="padding_20dp">20dp</dimen>
+    <dimen name="padding_30dp">30dp</dimen>
+    <dimen name="padding_40dp">40dp</dimen>
+    <dimen name="padding_50dp">50dp</dimen>
+    <dimen name="padding_55dp">55dp</dimen>
+
+    <dimen name="_10sdp">10.00dp</dimen>
+    <dimen name="_50sdp">50.00dp</dimen>
+    <dimen name="_100sdp">100.00dp</dimen>
+    <dimen name="_120sdp">120.00dp</dimen>
+    <dimen name="_200sdp">200.00dp</dimen>
+    <dimen name="_8sdp">8.00dp</dimen>
+    <dimen name="_4sdp">4.00dp</dimen>
+    <dimen name="_2sdp">2.00dp</dimen>
+
+    <dimen name="_5sdp">5.00dp</dimen>
+    <dimen name="_10ssp">10.00sp</dimen>
+    <dimen name="_11ssp">11.00sp</dimen>
+    <dimen name="_12ssp">12.00sp</dimen>
+    <dimen name="_13ssp">13.00sp</dimen>
+    <dimen name="_14ssp">14.00sp</dimen>
+    <dimen name="_15ssp">15.00sp</dimen>
+    <dimen name="_16ssp">16.00sp</dimen>
+    <dimen name="_17ssp">17.00sp</dimen>
+    <dimen name="_18ssp">18.00sp</dimen>
+    <dimen name="_19ssp">19.00sp</dimen>
+    <dimen name="_20ssp">20.00sp</dimen>
+    <dimen name="_21ssp">21.00sp</dimen>
+    <dimen name="_22ssp">22.00sp</dimen>
+    <dimen name="_23ssp">23.00sp</dimen>
+    <dimen name="_24ssp">24.00sp</dimen>
+    <dimen name="_25ssp">25.00sp</dimen>
+    <dimen name="_26ssp">26.00sp</dimen>
+    <dimen name="_27ssp">27.00sp</dimen>
+    <dimen name="_28ssp">28.00sp</dimen>
+</resources>

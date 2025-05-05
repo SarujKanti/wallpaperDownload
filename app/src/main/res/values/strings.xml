@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Wallpaper</string>
+    <string name="app_title">Git Repo Search</string>
+    <string name="app_search_title">Search by name or ID</string>
+    <string name="lbl_search">Search</string>
+    <string name="lbl_welcome">Welcome to</string>
+    <string name="lbl_git_repo">Wallpaper View</string>
+    <string name="lbl_present">Presented by Saruj</string>
+    <string name="lbl_check_internet_connection">Check Internet Connection</string>
+    <string name="lbl_close">Close</string>
+    <string name="lbl_show_local_data">No Internet Connection Found</string>
+    <string name="lbl_repo_url">GitHub Repository URL</string>
+    <string name="lbl_notification_permission">Notification permission granted</string>
+</resources>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="red">#FF0000</color>
+    <color name="black">#FF000000</color>
+    <color name="color_green_light">#68ae12</color>
+    <color name="color_yellow_dark">#9B870C</color>
+
+    <color name="gray_new2">#EBEBEB</color>
+    <color name="light_shade_gray">#F7F7F7</color>
+    <color name="silver_light_gray">#C0C0C0</color>
+
+    <color name="colorPrimary2">#000000</color>
+    <color name="colorTextDark">#292929</color>
+    <color name="color_grey_icon">#444444</color>
+    <color name="reply_comment_bg">#F4F4F4</color>
+    <color name="color_label">#444444</color>
+    <color name="colorPrimary1">#000000</color>
+    <color name="textColor">#293f6e</color>
+
+    <color name="gray_new">#E0E0E0</color>
+    <color name="colorTextLight">#8D8D8D</color>
+    <color name="black_overLay">#80000000</color>
+    <color name="black_less">#2C2525</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="new_gray">#F4F4F4</color>
+    <color name="background_color">#fff</color>
+    <color name="white2">#EFEDED</color>
+    <color name="gray_1">#D3D3D3</color>
+    <color name="colorTextNormal">#707070</color>
+    <color name="transparent_clr">#00FFFFFF</color>
+    <color name="black1">#3E3C3C</color>
+    <color name="quantum_white_text">#ffffff</color>
+    <color name="transparent">#00FFFFFF</color>
+    <color name="deep_blue">#040273</color>
+    <color name="grey">#a9a9a9</color>
+    <color name="tab_grey">#C0C0C0</color>
+    <color name="toolbar_bg_color">#F0FAF1F1</color>
+    <color name="color_green">#03AF0A</color>
+    <color name="sky">#5273EC</color>
+    <color name="color_blue">#013BFE</color>
+    <color name="splash_bg">#0057CC</color>
+    <color name="splash_txt">#8B97FF</color>
+    <color name="colorTextWhite">#000</color>
+    <color name="color_privacy_policy">#A0A0A0</color>
+    <color name="color_tandc">#0894F9</color>
+    <color name="color_edt_bg">#F4F4F4</color>
+    <color name="color_txt_enter_number">#1E1E1E</color>
+    <color name="txt_title">#1E1E1E</color>
+    <color name="txt_grey">#606060</color>
+    <color name="grey_1">#808080</color>
+    <color name="trans_black">#00000000</color>
+    <color name="btn_background">#D3D3D3</color>
+    <color name="color_line">#E8E8E8</color>
+    <color name="selectedTabColor">#FF6200EE</color>
+    <color name="defaultTabColor">#FFFFFF</color>
+    <color name="selected_color">#FF6200EE</color>
+    <color name="colorPrimary">#1E1E1E</color>
+    <color name="colorPrimary_black">#000000</color>
+    <color name="gray">#B0B0B0</color>
+    <color name="colorAccent">#293f6e</color>
+    <color name="pressed_color">#D3D3D3</color>
+    <color name="unselected_color">#FFFFFF</color>
+    <color name="colorGreen">#4CAF50</color>
+    <color name="selected_tab_text_color">#000000</color> <!-- Black -->
+    <color name="unselected_tab_text_color">#808080</color> <!-- Gray -->
+    <color name="selected_tab_background">#FFBB86FC</color> <!-- Replace with your chosen color -->
+    <color name="unselected_tab_background">#FF6200EE</color> <!-- Replace with your chosen color -->
+    <color name="color_team_selected">#E5E4E2</color>
+    <color name="light_gray">#D3D3D3</color>
+
+
+
+
+</resources>

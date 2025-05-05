@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Main outer progress bar -->
+    <item>
+        <rotate
+            android:duration="520"
+            android:fromDegrees="0"
+            android:pivotX="50%"
+            android:pivotY="50%"
+            android:toDegrees="1080">
+            <shape
+            android:innerRadius="15dp"
+            android:shape="ring"
+            android:thickness="3dp"
+            android:useLevel="false">
+            <size
+                android:width="45dp"
+                android:height="45dp" />
+            <gradient
+                android:centerColor="@color/black"
+                android:centerY="0.5"
+                android:endColor="@color/black"
+                android:startColor="@color/transparent"
+                android:type="sweep"
+                android:useLevel="false" />
+        </shape>
+    </rotate>
+</item>
+
+    <!-- Small inner progress bar (opposite rotation) -->
+<!--<item>-->
+<!--<rotate-->
+<!--    android:duration="500"-->
+<!--    android:fromDegrees="0"-->
+<!--    android:pivotX="50%"-->
+<!--    android:pivotY="50%"-->
+<!--    android:toDegrees="-720">-->
+<!--    <shape-->
+<!--        android:innerRadius="11dp"-->
+<!--    android:shape="ring"-->
+<!--    android:thickness="2.5dp"-->
+<!--    android:useLevel="false">-->
+<!--    <size-->
+<!--        android:width="30dp"-->
+<!--    android:height="30dp" />-->
+<!--    <gradient-->
+<!--        android:centerColor="@color/transparent"-->
+<!--        android:centerY="0.5"-->
+<!--        android:endColor="@color/transparent"-->
+<!--        android:startColor="@color/black"-->
+<!--        android:type="sweep"-->
+<!--        android:useLevel="false" />-->
+<!--</shape>-->
+<!--</rotate>-->
+<!--    </item>-->
+
+    </layer-list>
