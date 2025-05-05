@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.skd.wallpaper.R
 import com.skd.wallpaper.databinding.FragmentAllTabsViewBinding
 import com.skd.wallpaper.utils.BaseFragment
@@ -40,6 +41,7 @@ class RecentTabsFragment : BaseFragment<FragmentAllTabsViewBinding>(R.layout.fra
 
     private fun init(){
         binding.tvTitle.text = "Recent Text"
+        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
     }
 
 
