@@ -1,6 +1,7 @@
 package com.skd.wallpaper.fragments
 
 import android.content.Context
+import android.content.res.Resources
 import android.os.Bundle
 import android.util.Base64
 import android.view.LayoutInflater
@@ -55,10 +56,14 @@ class RecentTabsFragment : BaseFragment<FragmentAllTabsViewBinding>(R.layout.fra
     }
 
     private fun init(){
-        binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 4)
+        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         adapter = GenericAdapter(
             data = categoryList,
             bind = { binding, item, _ ->
+                val screenWidth = Resources.getSystem().displayMetrics.widthPixels
+                val layoutParams = binding.root.layoutParams
+                layoutParams.width = screenWidth / 3
+                binding.root.layoutParams = layoutParams
                 binding.tvName.text = item.name
                 if (!item.image.isNullOrEmpty()) {
                     try {
