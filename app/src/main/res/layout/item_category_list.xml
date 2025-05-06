@@ -14,12 +14,18 @@
         tools:ignore="MissingConstraints">
 
         <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/schoolImage"
+            android:id="@+id/categoryImage"
             android:layout_width="@dimen/_100sdp"
             android:layout_height="@dimen/_100sdp"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_launcher_background"
             />
+        <TextView
+            android:id="@+id/tvName"
+            android:text="skd"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
     </LinearLayout>
 
