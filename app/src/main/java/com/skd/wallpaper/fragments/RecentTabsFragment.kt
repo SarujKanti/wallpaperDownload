@@ -53,6 +53,7 @@ class RecentTabsFragment : BaseFragment<FragmentAllTabsViewBinding>(R.layout.fra
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         init()
+        init2()
     }
 
     private fun init(){
@@ -90,6 +91,43 @@ class RecentTabsFragment : BaseFragment<FragmentAllTabsViewBinding>(R.layout.fra
             }
         )
         binding.recyclerView.adapter = adapter
+    }
+
+    private fun init2(){
+        binding.recyclerView2.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        adapter = GenericAdapter(
+            data = categoryList,
+            bind = { binding, item, _ ->
+                val screenWidth = Resources.getSystem().displayMetrics.widthPixels
+                val layoutParams = binding.root.layoutParams
+                layoutParams.width = screenWidth / 3
+                binding.root.layoutParams = layoutParams
+                binding.tvName.text = item.name
+                if (!item.image.isNullOrEmpty()) {
+                    try {
+                        val decodedBytes = Base64.decode(item.image, Base64.DEFAULT)
+                        val decodedImageUrl = String(decodedBytes)
+                        if (decodedImageUrl.startsWith("http") && !decodedImageUrl.contains("undefined")) {
+                            Glide.with(binding.categoryImage.context)
+                                .load(decodedImageUrl)
+                                .placeholder(R.drawable.ic_launcher_background)
+                                .error(R.drawable.ic_launcher_background)
+                                .into(binding.categoryImage)
+                        } else {
+                            Validations.setImageForName(item.name, binding.categoryImage)
+                        }
+                    } catch (e: IllegalArgumentException) {
+                        Validations.setImageForName(item.name, binding.categoryImage)
+                    }
+                } else {
+                    Validations.setImageForName(item.name, binding.categoryImage)
+                }
+            },
+            inflater = { inflater, parent, _ ->
+                ItemCategoryListBinding.inflate(inflater, parent, false)
+            }
+        )
+        binding.recyclerView2.adapter = adapter
     }
 
 
