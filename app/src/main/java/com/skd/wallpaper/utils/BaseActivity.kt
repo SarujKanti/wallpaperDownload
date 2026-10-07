@@ -34,7 +34,7 @@ open class BaseActivity<T : ViewDataBinding>(@LayoutRes private val layoutResId:
     private fun uiView(){
         enableEdgeToEdge()
         window.statusBarColor = android.graphics.Color.TRANSPARENT
-        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = true
+        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = false
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             val imeVisible = insets.isVisible(WindowInsetsCompat.Type.ime())

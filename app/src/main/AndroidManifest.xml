@@ -2,6 +2,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.SET_WALLPAPER" />
+    <!-- Only needed to save into public Pictures on Android 9 and below -->
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -10,11 +18,13 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:requestLegacyExternalStorage="true"
         android:theme="@style/Theme.Wallpaper"
         tools:targetApi="31">
         <activity
             android:name=".activities.SplashActivity"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/Theme.Wallpaper.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -23,8 +33,15 @@
         </activity>
         <activity
             android:name=".activities.MainDashboardActivity"
-            android:exported="true"
-            android:windowSoftInputMode="adjustResize" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".activities.SearchResultsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.WallpaperPreviewActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Wallpaper.Preview" />
     </application>
 
 </manifest>

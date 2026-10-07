@@ -1,47 +1,42 @@
 package com.skd.wallpaper.network
 
-import android.content.Context
 import com.google.gson.GsonBuilder
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
-
-class AuthInterceptor(private val context: Context) : Interceptor {
-    override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
-        val sharedPreferences = context.getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
-        val token = sharedPreferences.getString("auth_token", null)
-        val requestBuilder = chain.request().newBuilder()
-
-        // Add Authorization header with Bearer token if available
-        token?.let {
-            requestBuilder.addHeader("Authorization", "Bearer $it")
-        }
-
-        return chain.proceed(requestBuilder.build())
-    }
-}
-
+/**
+ * Both APIs are completely free and need no API key:
+ *  - Wallhaven (https://wallhaven.cc/help/api) – real wallpapers, search, categories, colors.
+ *    Only SFW content is requested (purity=100).
+ *  - Lorem Picsum (https://picsum.photos) – used as a fallback if Wallhaven is unreachable.
+ */
 object RetrofitClient {
 
-    private const val URL = "https://api.gruppie.in/api/v1/"
-    private fun getRetrofit(context: Context): Retrofit {
-        // Logging interceptor to log the request and response bodies
-//        val logging = HttpLoggingInterceptor().apply {
-//            level = HttpLoggingInterceptor.Level.BODY
-//        }
+    private const val WALLHAVEN_URL = "https://wallhaven.cc/api/v1/"
+    private const val PICSUM_URL = "https://picsum.photos/"
 
-    val client = OkHttpClient.Builder()
-//        .addInterceptor(logging) // For logging
-        .addInterceptor(AuthInterceptor(context))
+    private val client: OkHttpClient by lazy {
+        OkHttpClient.Builder()
+            .connectTimeout(20, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .addInterceptor { chain ->
+                chain.proceed(
+                    chain.request().newBuilder()
+                        .header("User-Agent", "WallpaperView-Android/1.0")
+                        .build()
+                )
+            }
+            .build()
+    }
+
+    private fun retrofit(baseUrl: String): Retrofit = Retrofit.Builder()
+        .baseUrl(baseUrl)
+        .client(client)
+        .addConverterFactory(GsonConverterFactory.create(GsonBuilder().disableHtmlEscaping().create()))
         .build()
 
-    val builder = GsonBuilder().disableHtmlEscaping().create()
-    return Retrofit.Builder()
-    .baseUrl(URL)
-    .client(client)
-    .addConverterFactory(GsonConverterFactory.create(builder))
-    .build()
-    }
+    val wallhaven: WallhavenApi by lazy { retrofit(WALLHAVEN_URL).create(WallhavenApi::class.java) }
+    val picsum: PicsumApi by lazy { retrofit(PICSUM_URL).create(PicsumApi::class.java) }
 }

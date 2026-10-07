@@ -73,6 +73,19 @@
     <color name="color_team_selected">#E5E4E2</color>
     <color name="light_gray">#D3D3D3</color>
 
+    <!-- Redesigned dark palette -->
+    <color name="background">#0B0B14</color>
+    <color name="surface">#161624</color>
+    <color name="surface_variant">#202033</color>
+    <color name="stroke">#2A2A40</color>
+    <color name="accent_purple">#7C4DFF</color>
+    <color name="accent_pink">#FF4F9A</color>
+    <color name="accent_cyan">#3DDCFF</color>
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#A3A6C2</color>
+    <color name="text_hint">#6E7090</color>
+    <color name="like_red">#FF4F6D</color>
+
 
 
 
