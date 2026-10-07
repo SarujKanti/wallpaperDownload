@@ -17,27 +17,50 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.skd.wallpaper.BuildConfig
 import com.skd.wallpaper.R
+import com.skd.wallpaper.data.CategoryRepository
 import com.skd.wallpaper.databinding.ActivityMainDashboardBinding
 import com.skd.wallpaper.databinding.DialogFullscreenPartialBinding
 import com.skd.wallpaper.fragments.WallpaperGridFragment
 import com.skd.wallpaper.model.Category
+import com.skd.wallpaper.utils.AppTheme
 import com.skd.wallpaper.utils.BaseActivity
+import com.skd.wallpaper.utils.ThemeManager
+import kotlinx.coroutines.launch
 
 class MainDashboardActivity : BaseActivity<ActivityMainDashboardBinding>(R.layout.activity_main_dashboard) {
 
-    private val categories = Category.ALL
+    // Default tabs plus a tab per non-empty Supabase folder (found during the splash screen)
+    private var categories: List<Category> = CategoryRepository.cached ?: Category.DEFAULT
+    private lateinit var tabsAdapter: FragmentStateAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initToolbar()
         initSearch()
         initTabs()
+        if (CategoryRepository.cached == null) {
+            // Folder check still running (slow network): add those tabs when it finishes
+            lifecycleScope.launch { updateTabs(CategoryRepository.load().await()) }
+        }
+    }
+
+    private fun updateTabs(newCategories: List<Category>) {
+        if (newCategories == categories) return
+        val current = categories.getOrNull(binding.viewPager.currentItem)
+        categories = newCategories
+        tabsAdapter.notifyDataSetChanged()
+        // Stay on the same category even if new tabs were inserted before it
+        current?.let { binding.viewPager.setCurrentItem(categories.indexOf(it).coerceAtLeast(0), false) }
+        for (i in 0 until binding.tabLayout.tabCount) {
+            binding.tabLayout.getTabAt(i)?.let { styleTab(it, it.isSelected) }
+        }
     }
 
     private fun initToolbar() {
@@ -69,11 +92,16 @@ class MainDashboardActivity : BaseActivity<ActivityMainDashboardBinding>(R.layou
     }
 
     private fun initTabs() {
-        binding.viewPager.adapter = object : FragmentStateAdapter(this) {
+        tabsAdapter = object : FragmentStateAdapter(this) {
             override fun getItemCount() = categories.size
             override fun createFragment(position: Int): Fragment =
                 WallpaperGridFragment.newInstance(categories[position])
+
+            // Stable ids per category, so inserting tabs keeps each tab's loaded wallpapers
+            override fun getItemId(position: Int) = categories[position].hashCode().toLong()
+            override fun containsItem(itemId: Long) = categories.any { it.hashCode().toLong() == itemId }
         }
+        binding.viewPager.adapter = tabsAdapter
         binding.viewPager.offscreenPageLimit = 1
 
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
@@ -128,6 +156,11 @@ class MainDashboardActivity : BaseActivity<ActivityMainDashboardBinding>(R.layou
             dialog.dismiss()
             openDownloads()
         }
+        drawer.menuTheme.text = getString(R.string.lbl_menu_theme_value, getString(ThemeManager.current(this).label))
+        drawer.menuTheme.setOnClickListener {
+            dialog.dismiss()
+            chooseTheme()
+        }
         drawer.menuShare.setOnClickListener {
             dialog.dismiss()
             shareApp()
@@ -141,6 +174,19 @@ class MainDashboardActivity : BaseActivity<ActivityMainDashboardBinding>(R.layou
                 .show()
         }
         dialog.show()
+    }
+
+    private fun chooseTheme() {
+        val themes = AppTheme.values()
+        val selected = themes.indexOf(ThemeManager.current(this))
+        MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.lbl_choose_theme)
+            .setSingleChoiceItems(themes.map { getString(it.label) }.toTypedArray(), selected) { dialog, which ->
+                dialog.dismiss()
+                // Recreates open screens with the new light/dark resources
+                ThemeManager.set(this, themes[which])
+            }
+            .show()
     }
 
     private fun openDownloads() {

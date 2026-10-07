@@ -34,7 +34,7 @@
     <string name="msg_wallpaper_set">Wallpaper applied 🎉</string>
     <string name="msg_wallpaper_failed">Couldn\'t set wallpaper</string>
     <string name="msg_download_started">Downloading…</string>
-    <string name="msg_download_done">Saved to Pictures/WallpaperView</string>
+    <string name="msg_download_done">Saved to Pictures/Wallora/Download</string>
     <string name="msg_download_failed">Download failed</string>
     <string name="msg_permission_needed">Storage permission is needed to save wallpapers</string>
     <string name="msg_liked">Added to Liked ❤️</string>
@@ -45,9 +45,14 @@
     <string name="lbl_menu_home">Explore</string>
     <string name="lbl_menu_liked">Liked wallpapers</string>
     <string name="lbl_menu_downloads">Downloads folder</string>
+    <string name="lbl_menu_theme_value">Theme · %1$s</string>
+    <string name="lbl_choose_theme">Choose theme</string>
+    <string name="lbl_theme_system">System default</string>
+    <string name="lbl_theme_light">Light</string>
+    <string name="lbl_theme_dark">Dark</string>
     <string name="lbl_menu_share">Share app</string>
     <string name="lbl_menu_about">About</string>
-    <string name="lbl_about_msg">Wallpaper View brings you thousands of free, high-resolution wallpapers.\n\nWallpapers are provided by the free Wallhaven API (SFW only) with Lorem Picsum as a backup source. All downloads are saved to Pictures/WallpaperView.</string>
+    <string name="lbl_about_msg">Wallpaper View brings you thousands of free, high-resolution wallpapers.\n\nWallpapers are provided by the free Wallhaven API (SFW only) with Lorem Picsum as a backup source. All downloads are saved to Pictures/Wallora/Download.</string>
     <string name="lbl_version">Version %1$s</string>
     <string name="cd_back">Back</string>
     <string name="cd_menu">Menu</string>

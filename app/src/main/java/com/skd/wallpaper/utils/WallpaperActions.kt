@@ -20,7 +20,11 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
 import java.util.Locale
 
-const val DOWNLOAD_FOLDER = "WallpaperView"
+/**
+ * Saved under Pictures/Wallora/Download. Android 10+ only lets apps write into the
+ * standard shared folders (Pictures, Download, …), not a new folder at the storage root.
+ */
+const val DOWNLOAD_FOLDER = "Wallora/Download"
 
 fun formatCount(count: Int): String = when {
     count >= 1_000_000 -> String.format(Locale.US, "%.1fM", count / 1_000_000f)
@@ -43,18 +47,19 @@ sealed class DownloadStatus {
 object WallpaperDownloader {
 
     /**
-     * Saves the full-resolution image to Pictures/WallpaperView using the system
+     * Saves the full-resolution image to Pictures/Wallora/Download using the system
      * DownloadManager (shows a notification and survives the app being closed).
      * Emits progress until the download finishes.
      */
     fun download(context: Context, wallpaper: Wallpaper): Flow<DownloadStatus> = flow {
         val manager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-        val fileName = "${wallpaper.source.lowercase(Locale.US)}_${wallpaper.id}.${wallpaper.fileExtension}"
+        val prefix = wallpaper.source.lowercase(Locale.US).replace(Regex("[^a-z0-9]+"), "_")
+        val fileName = "${prefix}_${wallpaper.id}.${wallpaper.fileExtension}"
 
         val request = DownloadManager.Request(Uri.parse(wallpaper.fullUrl))
             .setTitle(fileName)
-            .setDescription("Wallpaper ${wallpaper.resolution}")
-            .setMimeType(if (wallpaper.fileExtension == "png") "image/png" else "image/jpeg")
+            .setDescription(ImageDimensions.label(wallpaper)?.let { "Wallpaper $it" } ?: "Wallpaper")
+            .setMimeType(wallpaper.fileType ?: "image/jpeg")
             .addRequestHeader("User-Agent", "WallpaperView-Android/1.0")
             .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
             .setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES, "$DOWNLOAD_FOLDER/$fileName")

@@ -73,17 +73,17 @@
     <color name="color_team_selected">#E5E4E2</color>
     <color name="light_gray">#D3D3D3</color>
 
-    <!-- Redesigned dark palette -->
-    <color name="background">#0B0B14</color>
-    <color name="surface">#161624</color>
-    <color name="surface_variant">#202033</color>
-    <color name="stroke">#2A2A40</color>
+    <!-- Redesigned palette (light). Dark values live in values-night/colors.xml -->
+    <color name="background">#F5F5FA</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="surface_variant">#E9E9F2</color>
+    <color name="stroke">#E1E1EC</color>
     <color name="accent_purple">#7C4DFF</color>
     <color name="accent_pink">#FF4F9A</color>
     <color name="accent_cyan">#3DDCFF</color>
-    <color name="text_primary">#FFFFFF</color>
-    <color name="text_secondary">#A3A6C2</color>
-    <color name="text_hint">#6E7090</color>
+    <color name="text_primary">#15151F</color>
+    <color name="text_secondary">#5E6180</color>
+    <color name="text_hint">#9A9CB5</color>
     <color name="like_red">#FF4F6D</color>
 
 

@@ -3,32 +3,43 @@ package com.skd.wallpaper.activities
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.View
 import android.view.animation.OvershootInterpolator
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import com.skd.wallpaper.data.CategoryRepository
 import com.skd.wallpaper.databinding.ActivitySplashBinding
+import com.skd.wallpaper.utils.applySystemBars
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeoutOrNull
 
 @SuppressLint("CustomSplashScreen")
 class SplashActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySplashBinding
-    private val handler = Handler(Looper.getMainLooper())
-    private val openDashboard = Runnable {
-        startActivity(Intent(this, MainDashboardActivity::class.java))
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
-        finish()
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        enableEdgeToEdge()
+        // Light icons over the purple gradient, whatever the theme
+        applySystemBars(forceDark = true)
         super.onCreate(savedInstanceState)
         binding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
         animateIn()
-        handler.postDelayed(openDashboard, 2000)
+
+        // Find your Supabase folders while the animation plays, so their tabs are ready
+        val tabs = CategoryRepository.load()
+        lifecycleScope.launch {
+            delay(SPLASH_MS)
+            withTimeoutOrNull(MAX_EXTRA_WAIT_MS) { tabs.await() }
+            openDashboard()
+        }
+    }
+
+    private fun openDashboard() {
+        startActivity(Intent(this, MainDashboardActivity::class.java))
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+        finish()
     }
 
     private fun animateIn() = with(binding) {
@@ -56,8 +67,9 @@ class SplashActivity : AppCompatActivity() {
         }
     }
 
-    override fun onDestroy() {
-        handler.removeCallbacks(openDashboard)
-        super.onDestroy()
+    companion object {
+        private const val SPLASH_MS = 2000L
+        // On a slow network, don't hold the user on the splash for long; the dashboard adds tabs later
+        private const val MAX_EXTRA_WAIT_MS = 2000L
     }
 }

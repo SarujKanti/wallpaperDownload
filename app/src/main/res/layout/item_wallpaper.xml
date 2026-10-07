@@ -52,19 +52,6 @@
             android:paddingVertical="3dp"
             android:textColor="@color/white"
             android:textSize="11sp" />
-
-        <TextView
-            android:id="@+id/tvFavorites"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_margin="10dp"
-            android:drawablePadding="4dp"
-            android:gravity="center_vertical"
-            android:textColor="@color/white"
-            android:textSize="11sp"
-            app:drawableStartCompat="@drawable/ic_heart"
-            app:drawableTint="@color/like_red" />
     </FrameLayout>
 
 </com.google.android.material.card.MaterialCardView>

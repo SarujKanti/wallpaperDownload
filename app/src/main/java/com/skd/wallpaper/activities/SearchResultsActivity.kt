@@ -3,7 +3,7 @@ package com.skd.wallpaper.activities
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
+import com.skd.wallpaper.utils.applySystemBars
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -16,8 +16,8 @@ class SearchResultsActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySearchResultsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+        applySystemBars()
         binding = ActivitySearchResultsBinding.inflate(layoutInflater)
         setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->

@@ -1,7 +1,10 @@
 package com.skd.wallpaper.network
 
 import com.google.gson.annotations.SerializedName
+import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.POST
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface WallhavenApi {
@@ -68,4 +71,42 @@ data class PicsumPhoto(
     @SerializedName("height") val height: Int,
     @SerializedName("url") val url: String?,
     @SerializedName("download_url") val downloadUrl: String
+)
+
+/**
+ * Your own images hosted in Supabase Storage (public bucket).
+ * Lists the files inside one folder; each folder is shown as a category tab.
+ */
+interface SupabaseStorageApi {
+
+    @POST("storage/v1/object/list/{bucket}")
+    suspend fun list(
+        @Path("bucket") bucket: String,
+        @Body body: SupabaseListRequest
+    ): List<SupabaseObject>
+}
+
+data class SupabaseListRequest(
+    @SerializedName("prefix") val prefix: String,
+    @SerializedName("limit") val limit: Int,
+    @SerializedName("offset") val offset: Int,
+    @SerializedName("sortBy") val sortBy: SupabaseSortBy = SupabaseSortBy()
+)
+
+data class SupabaseSortBy(
+    @SerializedName("column") val column: String = "created_at",
+    @SerializedName("order") val order: String = "desc"
+)
+
+data class SupabaseObject(
+    @SerializedName("name") val name: String,
+    // null for sub-folders
+    @SerializedName("id") val id: String?,
+    @SerializedName("created_at") val createdAt: String?,
+    @SerializedName("metadata") val metadata: SupabaseMetadata?
+)
+
+data class SupabaseMetadata(
+    @SerializedName("size") val size: Long = 0,
+    @SerializedName("mimetype") val mimeType: String?
 )

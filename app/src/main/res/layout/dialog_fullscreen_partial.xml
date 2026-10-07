@@ -72,6 +72,11 @@
         app:drawableStartCompat="@drawable/ic_folder" />
 
     <TextView
+        android:id="@+id/menuTheme"
+        style="@style/DrawerItem"
+        app:drawableStartCompat="@drawable/ic_theme" />
+
+    <TextView
         android:id="@+id/menuShare"
         style="@style/DrawerItem"
         android:text="@string/lbl_menu_share"

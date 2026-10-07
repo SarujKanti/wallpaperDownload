@@ -11,9 +11,10 @@ import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
+import com.skd.wallpaper.utils.applySystemBars
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.core.content.IntentCompat
 import androidx.core.view.ViewCompat
@@ -27,6 +28,7 @@ import com.skd.wallpaper.data.FavoritesStore
 import com.skd.wallpaper.databinding.ActivityWallpaperPreviewBinding
 import com.skd.wallpaper.model.Wallpaper
 import com.skd.wallpaper.utils.DownloadStatus
+import com.skd.wallpaper.utils.ImageDimensions
 import com.skd.wallpaper.utils.WallpaperDownloader
 import com.skd.wallpaper.utils.WallpaperSetter
 import com.skd.wallpaper.utils.formatCount
@@ -49,7 +51,9 @@ class WallpaperPreviewActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        enableEdgeToEdge()
+        // The preview always sits on a photo, so keep its overlays and bars dark in both themes
+        delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_YES
+        applySystemBars(forceDark = true)
         super.onCreate(savedInstanceState)
         binding = ActivityWallpaperPreviewBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -82,13 +86,12 @@ class WallpaperPreviewActivity : AppCompatActivity() {
     private fun bindInfo() = with(binding) {
         tvTitle.text = wallpaper.category?.replaceFirstChar { it.uppercase() } ?: getString(R.string.cd_wallpaper)
         tvSource.text = listOfNotNull(wallpaper.author, "via ${wallpaper.source}").joinToString(" · ")
-        tvResolution.text = wallpaper.resolution
+        // Own Supabase images get their size once the full image has loaded (see loadImage)
+        tvResolution.text = ImageDimensions.label(wallpaper).orEmpty()
         tvSize.text = formatFileSize(wallpaper.fileSize)
 
         tvViews.visibility = if (wallpaper.views > 0) View.VISIBLE else View.GONE
         tvViews.text = formatCount(wallpaper.views)
-        tvFavorites.visibility = if (wallpaper.favorites > 0) View.VISIBLE else View.GONE
-        tvFavorites.text = formatCount(wallpaper.favorites)
 
         renderColors()
         renderLike(FavoritesStore.isLiked(this@WallpaperPreviewActivity, wallpaper))
@@ -118,7 +121,12 @@ class WallpaperPreviewActivity : AppCompatActivity() {
             placeholderMemoryCacheKey(wallpaper.thumbUrl)
             crossfade(400)
             listener(
-                onSuccess = { _, _ -> binding.progressImage.visibility = View.GONE },
+                onSuccess = { _, _ ->
+                    binding.progressImage.visibility = View.GONE
+                    ImageDimensions.resolve(this@WallpaperPreviewActivity, wallpaper) { label ->
+                        binding.tvResolution.text = label
+                    }
+                },
                 onError = { _, _ ->
                     binding.progressImage.visibility = View.GONE
                     binding.ivFull.load(wallpaper.thumbUrl)
@@ -239,12 +247,11 @@ class WallpaperPreviewActivity : AppCompatActivity() {
 
     private fun showInfo() {
         val details = buildString {
-            appendLine("Resolution: ${wallpaper.resolution}")
+            ImageDimensions.label(wallpaper)?.let { appendLine("Resolution: $it") }
             formatFileSize(wallpaper.fileSize).takeIf { it.isNotEmpty() }?.let { appendLine("File size: $it") }
             wallpaper.fileType?.let { appendLine("Type: $it") }
             wallpaper.author?.let { appendLine("Author: $it") }
             if (wallpaper.views > 0) appendLine("Views: ${formatCount(wallpaper.views)}")
-            if (wallpaper.favorites > 0) appendLine("Favorites: ${formatCount(wallpaper.favorites)}")
             append("Source: ${wallpaper.source}")
         }
         MaterialAlertDialogBuilder(this)

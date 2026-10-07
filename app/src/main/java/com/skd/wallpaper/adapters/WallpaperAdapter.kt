@@ -1,8 +1,10 @@
 package com.skd.wallpaper.adapters
 
+import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
@@ -12,7 +14,7 @@ import coil.load
 import com.skd.wallpaper.R
 import com.skd.wallpaper.databinding.ItemWallpaperBinding
 import com.skd.wallpaper.model.Wallpaper
-import com.skd.wallpaper.utils.formatCount
+import com.skd.wallpaper.utils.ImageDimensions
 
 class WallpaperAdapter(
     private val onClick: (Wallpaper) -> Unit,
@@ -35,16 +37,17 @@ class WallpaperAdapter(
                 height = (columnWidth * aspectRatio(item)).toInt()
             }
 
-            val placeholder = ColorDrawable(placeholderColor(item))
+            val label = ImageDimensions.label(item)
+            tvResolution.text = label
+            tvResolution.visibility = if (label != null) View.VISIBLE else View.GONE
+
+            val placeholder = ColorDrawable(placeholderColor(item, root.context))
             ivWallpaper.load(item.thumbUrl) {
                 crossfade(300)
                 placeholder(placeholder)
                 error(placeholder)
+                if (label == null) listener(onSuccess = { _, _ -> showResolutionWhenKnown(item) })
             }
-
-            tvResolution.text = item.resolution
-            tvFavorites.text = formatCount(item.favorites)
-            tvFavorites.visibility = if (item.favorites > 0) android.view.View.VISIBLE else android.view.View.GONE
 
             bindLike(item)
             root.setOnClickListener { onClick(item) }
@@ -53,6 +56,17 @@ class WallpaperAdapter(
                     it.animate().scaleX(1f).scaleY(1f).setDuration(120).start()
                 }.start()
                 onLikeClick(item)
+            }
+        }
+
+        /** Own Supabase images: read the size once the image is downloaded, then show the badge. */
+        private fun showResolutionWhenKnown(item: Wallpaper) {
+            ImageDimensions.resolve(binding.root.context, item) { label ->
+                // The view may have been recycled for another wallpaper meanwhile
+                val position = bindingAdapterPosition
+                if (position == RecyclerView.NO_POSITION || getItem(position).key != item.key) return@resolve
+                binding.tvResolution.text = label
+                binding.tvResolution.visibility = View.VISIBLE
             }
         }
 
@@ -82,9 +96,9 @@ class WallpaperAdapter(
         return (item.height.toFloat() / item.width).coerceIn(1.3f, 2.1f)
     }
 
-    private fun placeholderColor(item: Wallpaper): Int =
+    private fun placeholderColor(item: Wallpaper, context: Context): Int =
         item.colors.firstOrNull()?.let { runCatching { Color.parseColor(it) }.getOrNull() }
-            ?: Color.parseColor("#202033")
+            ?: ContextCompat.getColor(context, R.color.surface_variant)
 
     private object Diff : DiffUtil.ItemCallback<Wallpaper>() {
         override fun areItemsTheSame(oldItem: Wallpaper, newItem: Wallpaper) = oldItem.key == newItem.key

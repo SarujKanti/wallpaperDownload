@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.TSS" parent="Theme.Material3.Dark.NoActionBar">
+    <style name="Base.Theme.TSS" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/accent_purple</item>
         <item name="colorOnPrimary">@color/white</item>
         <item name="colorSecondary">@color/accent_pink</item>
@@ -14,7 +14,7 @@
         <item name="colorControlNormal">@color/text_primary</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@color/background</item>
-        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightStatusBar">@bool/light_system_bars</item>
         <item name="fontFamily">@font/inter_500</item>
         <item name="android:fontFamily">@font/inter_500</item>
         <item name="materialAlertDialogTheme">@style/ThemeOverlay.Wallpaper.Dialog</item>
@@ -43,7 +43,7 @@
         <item name="cornerSize">24dp</item>
     </style>
 
-    <style name="SideDrawerDialog" parent="Theme.Material3.Dark.Dialog">
+    <style name="SideDrawerDialog" parent="Theme.Material3.DayNight.Dialog">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:backgroundDimEnabled">true</item>

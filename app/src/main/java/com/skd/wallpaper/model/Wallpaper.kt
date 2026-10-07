@@ -23,11 +23,10 @@ data class Wallpaper(
     val category: String? = null
 ) : Serializable {
 
-    val resolution: String get() = "${width}×$height"
-
     val fileExtension: String
         get() = when {
             fileType?.contains("png") == true -> "png"
+            fileType?.contains("webp") == true -> "webp"
             else -> "jpg"
         }
 
