@@ -1,18 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- res/layout/tab_item.xml -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tabText"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
+    android:layout_height="46dp"
+    android:background="@drawable/tab_background_default"
     android:gravity="center"
-    android:padding="8dp"
-    android:background="@drawable/tab_background_default">
-
-    <TextView
-        android:id="@+id/tabText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/gray"
-        android:textSize="14sp"
-        android:text="Tab" />
-</LinearLayout>
+    android:letterSpacing="0.01"
+    android:paddingStart="18dp"
+    android:paddingEnd="20dp"
+    android:textColor="@color/text_primary"
+    android:textSize="14sp" />

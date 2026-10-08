@@ -1,4 +1,26 @@
-<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
-    <solid android:color="@android:color/white"/> <!-- Set white background -->
-    <corners android:radius="4dp"/> <!-- Rounded corners -->
-</shape>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Selected tab: purple → pink pill with a soft glow ring around it -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape>
+            <corners android:radius="24dp" />
+            <gradient
+                android:angle="0"
+                android:endColor="#47FF4F9A"
+                android:startColor="#477C4DFF" />
+        </shape>
+    </item>
+    <item
+        android:bottom="3dp"
+        android:left="3dp"
+        android:right="3dp"
+        android:top="3dp">
+        <shape>
+            <corners android:radius="21dp" />
+            <gradient
+                android:angle="0"
+                android:endColor="@color/accent_pink"
+                android:startColor="@color/accent_purple" />
+        </shape>
+    </item>
+</layer-list>

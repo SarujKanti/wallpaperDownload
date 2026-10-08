@@ -1,72 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/white"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:background="@drawable/bg_gradient_splash">
 
-    <ImageView
-        android:id="@+id/image"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_margin="@android:dimen/app_icon_size"
-        android:src="@drawable/www"
+    <FrameLayout
+        android:id="@+id/logoContainer"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:elevation="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.404"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintVertical_bias="0.38">
+
+        <!-- Wallora logo tile -->
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/app_name"
+            android:scaleType="centerCrop"
+            android:src="@drawable/wallora_logo"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.Wallora.LogoTile"
+            app:strokeColor="#33FFFFFF"
+            app:strokeWidth="1dp" />
+    </FrameLayout>
 
     <TextView
         android:id="@+id/campus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:letterSpacing="0.2"
         android:text="@string/lbl_welcome"
-        android:textAlignment="center"
-        android:textColor="@color/black"
-        android:textSize="@dimen/_24ssp"
-        android:fontFamily="@font/inter_500"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/image"
-        app:layout_constraintStart_toStartOf="@+id/image"
-        app:layout_constraintTop_toBottomOf="@+id/image"
-        tools:ignore="MissingConstraints" />
+        android:textAllCaps="true"
+        android:textColor="#CCFFFFFF"
+        android:textSize="13sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/logoContainer" />
 
     <TextView
         android:id="@+id/txt_appName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
         android:text="@string/lbl_git_repo"
-        android:textAlignment="center"
-        android:fontFamily="@font/inter_500"
-        android:textColor="@color/black"
-        android:textSize="@dimen/_24ssp"
+        android:textColor="@color/white"
+        android:textSize="34sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/campus"
-        app:layout_constraintStart_toStartOf="@+id/campus"
-        app:layout_constraintTop_toBottomOf="@+id/campus"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/campus" />
+
+    <TextView
+        android:id="@+id/txtTagline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/lbl_tagline"
+        android:textColor="#B3FFFFFF"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txt_appName" />
+
+    <ProgressBar
+        android:id="@+id/progress"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_marginTop="40dp"
+        android:indeterminateDrawable="@drawable/progressbar_custome"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txtTagline" />
 
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="48dp"
         android:text="@string/lbl_present"
-        android:textAlignment="center"
-        android:textColor="@color/grey"
-        android:fontFamily="@font/inter_500"
-        android:textSize="@dimen/_16ssp"
-        android:textStyle="bold"
+        android:textColor="#99FFFFFF"
+        android:textSize="13sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_appName"
-        app:layout_constraintVertical_bias="0.894"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
