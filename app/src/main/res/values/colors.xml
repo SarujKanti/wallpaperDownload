@@ -90,6 +90,20 @@
     <!-- Dark navy from the edge of the Wallora logo: icon and splash background -->
     <color name="ic_launcher_bg">#080834</color>
 
+    <!-- Drawer menu icon colors, and their soft tile backgrounds (~12% alpha) -->
+    <color name="menu_explore">#7C4DFF</color>
+    <color name="menu_explore_bg">#1F7C4DFF</color>
+    <color name="menu_liked">#FF4F6D</color>
+    <color name="menu_liked_bg">#1FFF4F6D</color>
+    <color name="menu_downloads">#2F80ED</color>
+    <color name="menu_downloads_bg">#1F2F80ED</color>
+    <color name="menu_theme">#F5A623</color>
+    <color name="menu_theme_bg">#24F5A623</color>
+    <color name="menu_share">#12B886</color>
+    <color name="menu_share_bg">#1F12B886</color>
+    <color name="menu_about">#8E8AA8</color>
+    <color name="menu_about_bg">#248E8AA8</color>
+
     <!-- Wallpaper screen: always dark (it sits on a photo), so these are not in values-night -->
     <color name="preview_text">#FFFFFF</color>
     <color name="preview_text_secondary">#A3A6C2</color>

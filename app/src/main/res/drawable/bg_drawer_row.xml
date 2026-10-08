@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Rounded touch ripple for drawer rows -->
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="#297C4DFF">
+    <item android:id="@android:id/mask">
+        <shape>
+            <corners android:radius="16dp" />
+            <solid android:color="@color/white" />
+        </shape>
+    </item>
+</ripple>

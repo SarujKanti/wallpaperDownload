@@ -18,9 +18,43 @@
         <item name="fontFamily">@font/inter_500</item>
         <item name="android:fontFamily">@font/inter_500</item>
         <item name="materialAlertDialogTheme">@style/ThemeOverlay.Wallpaper.Dialog</item>
+
+        <!-- 12sp body text for widgets whose text size isn't set in our layouts: dialogs and
+             their lists, popup menus, snackbars, buttons, input fields. sp scales with the
+             user's font size setting (nonlinearly on Android 14+). -->
+        <item name="android:textAppearance">@style/TextAppearance.Wallora.Body</item>
+        <item name="android:textAppearanceSmall">@style/TextAppearance.Wallora.Body</item>
+        <item name="android:textAppearanceMedium">@style/TextAppearance.Wallora.Body</item>
+        <item name="android:textAppearanceListItem">@style/TextAppearance.Wallora.Body</item>
+        <item name="android:textAppearanceListItemSmall">@style/TextAppearance.Wallora.Body</item>
+        <item name="android:textAppearanceLargePopupMenu">@style/TextAppearance.Wallora.Body</item>
+        <item name="android:textAppearanceSmallPopupMenu">@style/TextAppearance.Wallora.Body</item>
+        <item name="textAppearanceListItem">@style/TextAppearance.Wallora.Body</item>
+        <item name="textAppearanceListItemSmall">@style/TextAppearance.Wallora.Body</item>
+        <item name="textAppearanceLargePopupMenu">@style/TextAppearance.Wallora.Body</item>
+        <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.Wallora.Body</item>
+        <item name="textAppearanceBodyLarge">@style/TextAppearance.Wallora.Body</item>
+        <item name="textAppearanceBodyMedium">@style/TextAppearance.Wallora.Body</item>
+        <item name="textAppearanceBodySmall">@style/TextAppearance.Wallora.Body</item>
+        <item name="textAppearanceSubtitle1">@style/TextAppearance.Wallora.Body</item>
+        <item name="textAppearanceLabelLarge">@style/TextAppearance.Wallora.Label</item>
+        <item name="textAppearanceButton">@style/TextAppearance.Wallora.Label</item>
     </style>
 
     <style name="Theme.Wallpaper" parent="Base.Theme.TSS" />
+
+    <!-- App-wide default text sizes -->
+    <style name="TextAppearance.Wallora.Body" parent="TextAppearance.Material3.BodyMedium">
+        <item name="android:textSize">12sp</item>
+        <item name="android:fontFamily">@font/inter_500</item>
+        <item name="fontFamily">@font/inter_500</item>
+    </style>
+
+    <style name="TextAppearance.Wallora.Label" parent="TextAppearance.Material3.LabelLarge">
+        <item name="android:textSize">12sp</item>
+        <item name="android:fontFamily">@font/inter_500</item>
+        <item name="fontFamily">@font/inter_500</item>
+    </style>
 
     <style name="Theme.Wallpaper.Splash" parent="Theme.Wallpaper">
         <item name="android:windowBackground">@drawable/bg_gradient_splash</item>
@@ -87,17 +121,60 @@
         <item name="tint">@color/preview_text</item>
     </style>
 
-    <style name="DrawerItem">
+    <!-- Side drawer rows: colored icon tile, title, and a chevron -->
+    <style name="DrawerRow">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">52dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:minHeight">58dp</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:layout_marginTop">2dp</item>
         <item name="android:gravity">center_vertical</item>
-        <item name="android:paddingStart">24dp</item>
-        <item name="android:paddingEnd">24dp</item>
-        <item name="android:drawablePadding">18dp</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:paddingStart">10dp</item>
+        <item name="android:paddingEnd">8dp</item>
+        <item name="android:background">@drawable/bg_drawer_row</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+
+    <style name="DrawerRowIcon">
+        <item name="android:layout_width">40dp</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:padding">9dp</item>
+        <item name="android:background">@drawable/bg_menu_icon</item>
+        <item name="android:importantForAccessibility">no</item>
+    </style>
+
+    <style name="DrawerRowTitle">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_marginStart">14dp</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:maxLines">1</item>
         <item name="android:textColor">@color/text_primary</item>
-        <item name="android:textSize">15sp</item>
-        <item name="android:background">?attr/selectableItemBackground</item>
-        <item name="drawableTint">@color/text_secondary</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="DrawerRowChevron">
+        <item name="android:layout_width">20dp</item>
+        <item name="android:layout_height">20dp</item>
+        <item name="android:src">@drawable/ic_chevron_right</item>
+        <item name="android:importantForAccessibility">no</item>
+        <item name="tint">@color/text_hint</item>
+    </style>
+
+    <style name="DrawerSection">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingStart">12dp</item>
+        <item name="android:paddingTop">18dp</item>
+        <item name="android:paddingBottom">6dp</item>
+        <item name="android:letterSpacing">0.18</item>
+        <item name="android:textColor">@color/text_hint</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
     <!--    this is our toolbar theme-->

@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Side drawer. Runs edge to edge; the header and footer are padded clear of the
+     status and navigation bars in code. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/dialogRoot"
@@ -8,102 +10,258 @@
     android:orientation="vertical">
 
     <!-- Header -->
-    <LinearLayout
+    <FrameLayout
         android:id="@+id/drawerHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_drawer_header"
-        android:orientation="vertical"
-        android:paddingStart="24dp"
-        android:paddingTop="48dp"
-        android:paddingEnd="24dp"
-        android:paddingBottom="28dp">
+        android:background="@drawable/bg_drawer_header">
 
-        <com.google.android.material.imageview.ShapeableImageView
-            android:layout_width="68dp"
-            android:layout_height="68dp"
-            android:importantForAccessibility="no"
-            android:scaleType="centerCrop"
-            android:src="@drawable/wallora_logo"
-            app:shapeAppearanceOverlay="@style/ShapeAppearance.Wallora.LogoTile"
-            app:strokeColor="#4DFFFFFF"
-            app:strokeWidth="1dp" />
+        <!-- Soft decorative glows -->
+        <View
+            android:layout_width="180dp"
+            android:layout_height="180dp"
+            android:layout_gravity="end|center_vertical"
+            android:background="@drawable/bg_glow_circle"
+            android:translationX="70dp" />
 
-        <TextView
-            android:layout_width="wrap_content"
+        <View
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_gravity="bottom|start"
+            android:alpha="0.7"
+            android:background="@drawable/bg_glow_circle"
+            android:translationX="-40dp"
+            android:translationY="60dp" />
+
+        <LinearLayout
+            android:id="@+id/headerContent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/lbl_git_repo"
-            android:textColor="@color/white"
-            android:textSize="22sp"
-            android:textStyle="bold" />
+            android:orientation="vertical"
+            android:paddingStart="24dp"
+            android:paddingTop="28dp"
+            android:paddingEnd="24dp"
+            android:paddingBottom="24dp">
 
-        <TextView
-            android:id="@+id/tvDialogContent"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:text="@string/lbl_developer"
-            android:textColor="#D9FFFFFF"
-            android:textSize="14sp" />
-    </LinearLayout>
+            <com.google.android.material.imageview.ShapeableImageView
+                android:layout_width="68dp"
+                android:layout_height="68dp"
+                android:elevation="6dp"
+                android:importantForAccessibility="no"
+                android:scaleType="centerCrop"
+                android:src="@drawable/wallora_logo"
+                app:shapeAppearanceOverlay="@style/ShapeAppearance.Wallora.LogoTile"
+                app:strokeColor="#66FFFFFF"
+                app:strokeWidth="1dp" />
 
-    <TextView
-        android:id="@+id/menuExplore"
-        style="@style/DrawerItem"
-        android:layout_marginTop="12dp"
-        android:text="@string/lbl_menu_home"
-        app:drawableStartCompat="@drawable/ic_wallpaper" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/lbl_git_repo"
+                android:textColor="@color/white"
+                android:textSize="26sp"
+                android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/menuLiked"
-        style="@style/DrawerItem"
-        android:text="@string/lbl_menu_liked"
-        app:drawableStartCompat="@drawable/ic_heart" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="@string/lbl_tagline"
+                android:textColor="#E6FFFFFF"
+                android:textSize="12sp" />
 
-    <TextView
-        android:id="@+id/menuDownloads"
-        style="@style/DrawerItem"
-        android:text="@string/lbl_menu_downloads"
-        app:drawableStartCompat="@drawable/ic_folder" />
+            <TextView
+                android:id="@+id/tvDialogContent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:background="@drawable/bg_chip_glass"
+                android:paddingStart="12dp"
+                android:paddingTop="6dp"
+                android:paddingEnd="12dp"
+                android:paddingBottom="6dp"
+                android:text="@string/lbl_developer"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+        </LinearLayout>
+    </FrameLayout>
 
-    <TextView
-        android:id="@+id/menuTheme"
-        style="@style/DrawerItem"
-        app:drawableStartCompat="@drawable/ic_theme" />
-
-    <TextView
-        android:id="@+id/menuShare"
-        style="@style/DrawerItem"
-        android:text="@string/lbl_menu_share"
-        app:drawableStartCompat="@drawable/ic_share" />
-
-    <TextView
-        android:id="@+id/menuAbout"
-        style="@style/DrawerItem"
-        android:text="@string/lbl_menu_about"
-        app:drawableStartCompat="@drawable/ic_info" />
-
-    <View
-        android:layout_width="0dp"
+    <!-- Menu (scrolls on short screens / landscape) -->
+    <ScrollView
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:overScrollMode="never"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:paddingBottom="8dp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:text="@string/lbl_powered_by"
-        android:textColor="@color/text_hint"
-        android:textSize="12sp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/tvVersion"
-        android:layout_width="wrap_content"
+            <TextView
+                style="@style/DrawerSection"
+                android:text="@string/lbl_section_browse" />
+
+            <LinearLayout
+                android:id="@+id/menuExplore"
+                style="@style/DrawerRow">
+
+                <ImageView
+                    style="@style/DrawerRowIcon"
+                    android:backgroundTint="@color/menu_explore_bg"
+                    android:src="@drawable/ic_wallpaper"
+                    app:tint="@color/menu_explore" />
+
+                <TextView
+                    style="@style/DrawerRowTitle"
+                    android:text="@string/lbl_menu_home" />
+
+                <ImageView style="@style/DrawerRowChevron" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/menuLiked"
+                style="@style/DrawerRow">
+
+                <ImageView
+                    style="@style/DrawerRowIcon"
+                    android:backgroundTint="@color/menu_liked_bg"
+                    android:src="@drawable/ic_heart"
+                    app:tint="@color/menu_liked" />
+
+                <TextView
+                    style="@style/DrawerRowTitle"
+                    android:text="@string/lbl_menu_liked" />
+
+                <ImageView style="@style/DrawerRowChevron" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/menuDownloads"
+                style="@style/DrawerRow">
+
+                <ImageView
+                    style="@style/DrawerRowIcon"
+                    android:backgroundTint="@color/menu_downloads_bg"
+                    android:src="@drawable/ic_folder"
+                    app:tint="@color/menu_downloads" />
+
+                <TextView
+                    style="@style/DrawerRowTitle"
+                    android:text="@string/lbl_menu_downloads" />
+
+                <ImageView style="@style/DrawerRowChevron" />
+            </LinearLayout>
+
+            <TextView
+                style="@style/DrawerSection"
+                android:text="@string/lbl_section_more" />
+
+            <LinearLayout
+                android:id="@+id/menuTheme"
+                style="@style/DrawerRow">
+
+                <ImageView
+                    style="@style/DrawerRowIcon"
+                    android:backgroundTint="@color/menu_theme_bg"
+                    android:src="@drawable/ic_theme"
+                    app:tint="@color/menu_theme" />
+
+                <TextView
+                    style="@style/DrawerRowTitle"
+                    android:text="@string/lbl_menu_theme" />
+
+                <!-- Current theme, e.g. "System default" -->
+                <TextView
+                    android:id="@+id/tvThemeValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="4dp"
+                    android:background="@drawable/bg_value_pill"
+                    android:maxLines="1"
+                    android:paddingStart="10dp"
+                    android:paddingTop="4dp"
+                    android:paddingEnd="10dp"
+                    android:paddingBottom="4dp"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="12sp" />
+
+                <ImageView style="@style/DrawerRowChevron" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/menuShare"
+                style="@style/DrawerRow">
+
+                <ImageView
+                    style="@style/DrawerRowIcon"
+                    android:backgroundTint="@color/menu_share_bg"
+                    android:src="@drawable/ic_share"
+                    app:tint="@color/menu_share" />
+
+                <TextView
+                    style="@style/DrawerRowTitle"
+                    android:text="@string/lbl_menu_share" />
+
+                <ImageView style="@style/DrawerRowChevron" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/menuAbout"
+                style="@style/DrawerRow">
+
+                <ImageView
+                    style="@style/DrawerRowIcon"
+                    android:backgroundTint="@color/menu_about_bg"
+                    android:src="@drawable/ic_info"
+                    app:tint="@color/menu_about" />
+
+                <TextView
+                    style="@style/DrawerRowTitle"
+                    android:text="@string/lbl_menu_about" />
+
+                <ImageView style="@style/DrawerRowChevron" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Footer -->
+    <LinearLayout
+        android:id="@+id/drawerFooter"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="2dp"
-        android:layout_marginBottom="28dp"
-        android:textColor="@color/text_hint"
-        android:textSize="12sp" />
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/bg_drawer_footer"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="14dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/lbl_powered_by"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/tvVersion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:background="@drawable/bg_value_pill"
+            android:paddingStart="10dp"
+            android:paddingTop="4dp"
+            android:paddingEnd="10dp"
+            android:paddingBottom="4dp"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp" />
+    </LinearLayout>
 </LinearLayout>
