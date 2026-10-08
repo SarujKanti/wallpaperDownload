@@ -3,6 +3,7 @@ package com.skd.wallpaper.utils
 import android.app.DownloadManager
 import android.app.WallpaperManager
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
@@ -11,6 +12,7 @@ import coil.imageLoader
 import coil.request.ImageRequest
 import coil.request.SuccessResult
 import coil.size.Precision
+import com.skd.wallpaper.R
 import com.skd.wallpaper.model.Wallpaper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -115,4 +117,17 @@ object WallpaperSetter {
             }.isSuccess
         }
     }
+}
+
+/** Opens the system share sheet with a link to [wallpaper]. */
+fun shareWallpaper(context: Context, wallpaper: Wallpaper) {
+    val link = wallpaper.pageUrl ?: wallpaper.fullUrl
+    context.startActivity(
+        Intent.createChooser(
+            Intent(Intent.ACTION_SEND)
+                .setType("text/plain")
+                .putExtra(Intent.EXTRA_TEXT, context.getString(R.string.lbl_share_text, link)),
+            context.getString(R.string.lbl_share)
+        )
+    )
 }

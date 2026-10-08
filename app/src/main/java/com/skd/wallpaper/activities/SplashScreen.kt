@@ -51,8 +51,10 @@ class SplashActivity : AppCompatActivity() {
             .setDuration(700)
             .setInterpolator(OvershootInterpolator(1.6f))
             .withEndAction {
-                // Gentle floating rotation once the logo lands
-                logoContainer.animate().rotationBy(360f).setDuration(1200).start()
+                // Gentle "breathing" pulse once the logo lands
+                logoContainer.animate().scaleX(1.06f).scaleY(1.06f).setDuration(600).withEndAction {
+                    logoContainer.animate().scaleX(1f).scaleY(1f).setDuration(600).start()
+                }.start()
             }
             .start()
 

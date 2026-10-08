@@ -14,7 +14,6 @@ import android.widget.Toast
 import com.skd.wallpaper.utils.applySystemBars
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.core.content.IntentCompat
 import androidx.core.view.ViewCompat
@@ -33,6 +32,7 @@ import com.skd.wallpaper.utils.WallpaperDownloader
 import com.skd.wallpaper.utils.WallpaperSetter
 import com.skd.wallpaper.utils.formatCount
 import com.skd.wallpaper.utils.formatFileSize
+import com.skd.wallpaper.utils.shareWallpaper
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
@@ -51,8 +51,9 @@ class WallpaperPreviewActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // The preview always sits on a photo, so keep its overlays and bars dark in both themes
-        delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_YES
+        // Always sits on a photo: light status bar icons and fixed dark colors (preview_* colors).
+        // Don't force night mode here; AppCompat would apply it to shared resources and leak
+        // dark colors into the other screens.
         applySystemBars(forceDark = true)
         super.onCreate(savedInstanceState)
         binding = ActivityWallpaperPreviewBinding.inflate(layoutInflater)
@@ -123,8 +124,8 @@ class WallpaperPreviewActivity : AppCompatActivity() {
             listener(
                 onSuccess = { _, _ ->
                     binding.progressImage.visibility = View.GONE
-                    ImageDimensions.resolve(this@WallpaperPreviewActivity, wallpaper) { label ->
-                        binding.tvResolution.text = label
+                    ImageDimensions.resolve(this@WallpaperPreviewActivity, wallpaper) { (w, h) ->
+                        binding.tvResolution.text = "$w×$h"
                     }
                 },
                 onError = { _, _ ->
@@ -150,14 +151,14 @@ class WallpaperPreviewActivity : AppCompatActivity() {
         }
         btnDownload.setOnClickListener { onDownloadClicked() }
         btnSet.setOnClickListener { chooseWallpaperTarget() }
-        btnShare.setOnClickListener { share() }
+        btnShare.setOnClickListener { shareWallpaper(this@WallpaperPreviewActivity, wallpaper) }
         btnInfo.setOnClickListener { showInfo() }
     }
 
     private fun renderLike(liked: Boolean) {
         binding.btnLike.setImageResource(if (liked) R.drawable.ic_heart else R.drawable.ic_heart_outline)
         binding.btnLike.setColorFilter(
-            ContextCompat.getColor(this, if (liked) R.color.like_red else R.color.text_primary)
+            ContextCompat.getColor(this, if (liked) R.color.like_red else R.color.preview_text)
         )
     }
 
@@ -232,18 +233,6 @@ class WallpaperPreviewActivity : AppCompatActivity() {
         }
     }
     // endregion
-
-    private fun share() {
-        val link = wallpaper.pageUrl ?: wallpaper.fullUrl
-        startActivity(
-            Intent.createChooser(
-                Intent(Intent.ACTION_SEND)
-                    .setType("text/plain")
-                    .putExtra(Intent.EXTRA_TEXT, getString(R.string.lbl_share_text, link)),
-                getString(R.string.lbl_share)
-            )
-        )
-    }
 
     private fun showInfo() {
         val details = buildString {

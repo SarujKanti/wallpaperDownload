@@ -17,6 +17,8 @@ data class Category(
     // Wallhaven category bits: general / anime / people. "100" = general only (cleanest results)
     val apiCategories: String = "100",
     val storageFolder: String? = null,
+    // Show the feed in a new random order every day (same order all day, also across pages)
+    val shuffleDaily: Boolean = false,
     val isLiked: Boolean = false
 ) : Serializable {
 
@@ -34,7 +36,7 @@ data class Category(
          * followed by Wallhaven results for [query]; an empty folder shows only Wallhaven.
          */
         val DEFAULT = listOf(
-            Category("Trending", "🔥", query = "landscape"),
+            Category("Trending", "🔥", query = "landscape", shuffleDaily = true),
             Category("Latest", "✨", query = "landscape", sorting = "date_added"),
             Category("Nature", "🌿", query = "nature", storageFolder = "nature"),
             Category("Anime", "🎌", query = "landscape", apiCategories = "010"),

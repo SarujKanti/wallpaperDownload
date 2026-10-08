@@ -114,7 +114,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_weight="1"
-                android:textColor="@color/text_secondary"
+                android:textColor="@color/preview_text_secondary"
                 android:textSize="12sp" />
 
             <TextView
@@ -123,10 +123,10 @@
                 android:layout_height="wrap_content"
                 android:drawablePadding="4dp"
                 android:gravity="center_vertical"
-                android:textColor="@color/text_secondary"
+                android:textColor="@color/preview_text_secondary"
                 android:textSize="12sp"
                 app:drawableStartCompat="@drawable/ic_eye"
-                app:drawableTint="@color/text_secondary" />
+                app:drawableTint="@color/preview_text_secondary" />
         </LinearLayout>
 
         <!-- Color palette from Wallhaven -->

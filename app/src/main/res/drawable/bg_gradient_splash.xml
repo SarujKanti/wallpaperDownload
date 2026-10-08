@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Matches the Wallora logo: purple glow fading into its deep navy -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
     <gradient
-        android:angle="135"
-        android:centerColor="#3A1C71"
-        android:endColor="#0B0B14"
-        android:startColor="#7C4DFF"
+        android:angle="270"
+        android:centerColor="#1C1260"
+        android:endColor="@color/ic_launcher_bg"
+        android:startColor="#3A1C8F"
         android:type="linear" />
 </shape>

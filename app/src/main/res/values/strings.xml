@@ -1,9 +1,9 @@
 <resources>
-    <string name="app_name">Wallpaper</string>
+    <string name="app_name">Wallora ✨</string>
     <string name="app_search_title">Search by name or ID</string>
     <string name="lbl_search">Search</string>
     <string name="lbl_welcome">Welcome to</string>
-    <string name="lbl_git_repo">Wallpaper View</string>
+    <string name="lbl_git_repo">Wallora</string>
     <string name="lbl_present">Presented by Saruj</string>
     <string name="lbl_check_internet_connection">Check Internet Connection</string>
     <string name="lbl_close">Close</string>
@@ -11,10 +11,13 @@
     <string name="lbl_repo_url">GitHub Repository URL</string>
     <string name="lbl_notification_permission">Notification permission granted</string>
 
-    <string name="lbl_tagline">Discover · Download · Decorate</string>
-    <string name="lbl_search_hint">Search wallpapers, e.g. mountains, neon…</string>
+    <string name="lbl_tagline">Wallpapers for every mood</string>
+    <string name="lbl_search_hint">Search wallpapers, e.g. mountains, anime, minimal…</string>
     <string name="lbl_explore">Explore</string>
-    <string name="lbl_hello">Find your next vibe ✨</string>
+    <string name="lbl_headline">Set the mood, Find your vibe.✨</string>
+    <string name="lbl_headline_accent">vibe.</string>
+    <string name="lbl_open">Open</string>
+    <string name="lbl_unlike">Remove from liked</string>
     <string name="lbl_download">Download</string>
     <string name="lbl_set_wallpaper">Set</string>
     <string name="lbl_like">Like</string>
@@ -52,7 +55,7 @@
     <string name="lbl_theme_dark">Dark</string>
     <string name="lbl_menu_share">Share app</string>
     <string name="lbl_menu_about">About</string>
-    <string name="lbl_about_msg">Wallpaper View brings you thousands of free, high-resolution wallpapers.\n\nWallpapers are provided by the free Wallhaven API (SFW only) with Lorem Picsum as a backup source. All downloads are saved to Pictures/Wallora/Download.</string>
+    <string name="lbl_about_msg">Wallora brings you thousands of free, high-resolution wallpapers.\n\nWallpapers are provided by the free Wallhaven API (SFW only) with Lorem Picsum as a backup source. All downloads are saved to Pictures/Wallora/Download.</string>
     <string name="lbl_version">Version %1$s</string>
     <string name="cd_back">Back</string>
     <string name="cd_menu">Menu</string>

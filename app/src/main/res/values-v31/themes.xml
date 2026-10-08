@@ -1,0 +1,10 @@
+<resources>
+    <!-- Android 12+ always shows a system splash first: show the Wallora logo on its navy
+         background so it flows straight into the app's own splash screen. -->
+    <style name="Theme.Wallpaper.Splash" parent="Theme.Wallpaper">
+        <item name="android:windowBackground">@drawable/bg_gradient_splash</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowSplashScreenBackground">@color/ic_launcher_bg</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@mipmap/ic_launcher_foreground</item>
+    </style>
+</resources>

@@ -9,8 +9,13 @@ import com.skd.wallpaper.network.RetrofitClient
 import com.skd.wallpaper.network.SupabaseListRequest
 import com.skd.wallpaper.network.SupabaseObject
 import com.skd.wallpaper.network.WallhavenWallpaper
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import retrofit2.HttpException
+import java.util.Calendar
+import kotlin.random.Random
 
 data class WallpaperPage(
     val items: List<Wallpaper>,
@@ -23,6 +28,12 @@ object WallpaperRepository {
     private const val STORAGE_PAGE_SIZE = 30
     // Mixed tabs fetch the whole (small) folder with the first page, before the online results
     private const val STORAGE_LIMIT = 200
+    private const val WALLHAVEN_PAGE_SIZE = 24
+    // Trending's daily shuffle covers the top 4 pages (96 wallpapers)
+    private const val DAILY_POOL_PAGES = 4
+
+    // Shuffled pool per daily-shuffled tab, with the day it was made for
+    private val dailyPools = mutableMapOf<String, Pair<Long, List<Wallpaper>>>()
 
     /**
      * Loads one page for [category]:
@@ -43,13 +54,50 @@ object WallpaperRepository {
         } else emptyList()
 
         val online = try {
-            loadOnline(category, page)
+            if (category.shuffleDaily) loadDailyShuffled(category, page) else loadOnline(category, page)
         } catch (e: Exception) {
             if (e is kotlinx.coroutines.CancellationException || own.isEmpty()) throw e
             // Online sources failed but we still have your images to show
             WallpaperPage(emptyList(), hasMore = false)
         }
         return WallpaperPage(own + online.items, online.hasMore)
+    }
+
+    /**
+     * A new order every day: the top [DAILY_POOL_PAGES] pages are fetched once and shuffled
+     * with a seed from today's date, so every position changes each day but stays the same
+     * all day (also when scrolling or refreshing). Wallhaven's own random sorting can't be
+     * used: its API ignores the seed and reshuffles on every request.
+     * Pages after the pool continue with the next online pages, each shuffled the same way.
+     */
+    private suspend fun loadDailyShuffled(category: Category, page: Int): WallpaperPage {
+        val day = currentDay()
+        val pool = dailyPools[category.title]?.takeIf { it.first == day }?.second
+            ?: buildDailyPool(category, day).also { if (it.isNotEmpty()) dailyPools[category.title] = day to it }
+
+        val poolPages = (pool.size + WALLHAVEN_PAGE_SIZE - 1) / WALLHAVEN_PAGE_SIZE
+        if (page <= poolPages) {
+            val from = (page - 1) * WALLHAVEN_PAGE_SIZE
+            return WallpaperPage(pool.subList(from, minOf(from + WALLHAVEN_PAGE_SIZE, pool.size)), hasMore = true)
+        }
+        val next = loadOnline(category, DAILY_POOL_PAGES + page - poolPages)
+        return next.copy(items = next.items.sortedBy { it.key }.shuffled(Random(day * 31L + page)))
+    }
+
+    private suspend fun buildDailyPool(category: Category, day: Long): List<Wallpaper> = coroutineScope {
+        (1..DAILY_POOL_PAGES)
+            .map { page -> async { runCatching { loadOnline(category, page).items }.getOrDefault(emptyList()) } }
+            .awaitAll()
+            .flatten()
+            .distinctBy { it.key }
+            // A fixed base order first, so the same day always gives the same shuffle
+            .sortedBy { it.key }
+            .shuffled(Random(day))
+    }
+
+    /** Today's date as a number (changes at local midnight), used as the shuffle seed. */
+    private fun currentDay(): Long = Calendar.getInstance().run {
+        get(Calendar.YEAR) * 1000L + get(Calendar.DAY_OF_YEAR)
     }
 
     private suspend fun loadOnline(category: Category, page: Int): WallpaperPage = try {
@@ -110,7 +158,8 @@ object WallpaperRepository {
 
     private fun WallhavenWallpaper.toWallpaper() = Wallpaper(
         id = id,
-        thumbUrl = thumbs?.large ?: thumbs?.original ?: path,
+        // "original" keeps the image shape; "large" is a landscape crop that looks soft in 4:5 cards
+        thumbUrl = thumbs?.original ?: thumbs?.large ?: path,
         fullUrl = path,
         width = width,
         height = height,
@@ -126,10 +175,10 @@ object WallpaperRepository {
 
     private fun PicsumPhoto.toWallpaper(grayscale: Boolean): Wallpaper {
         val suffix = if (grayscale) "?grayscale" else ""
-        // Picsum can resize on the fly, so ask for a small portrait crop for the grid
+        // Picsum can resize on the fly, so ask for a 4:5 crop matching the grid cards
         return Wallpaper(
             id = id,
-            thumbUrl = "https://picsum.photos/id/$id/400/700$suffix",
+            thumbUrl = "https://picsum.photos/id/$id/480/600$suffix",
             fullUrl = "https://picsum.photos/id/$id/$width/$height$suffix",
             width = width,
             height = height,

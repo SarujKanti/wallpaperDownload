@@ -21,19 +21,22 @@ object ImageDimensions {
     private val executor = Executors.newSingleThreadExecutor()
     private val main = Handler(Looper.getMainLooper())
 
-    /** The label if already known, otherwise null. */
-    fun label(wallpaper: Wallpaper): String? = when {
-        wallpaper.width > 0 && wallpaper.height > 0 -> "${wallpaper.width}×${wallpaper.height}"
-        else -> cache[wallpaper.fullUrl]?.let { (w, h) -> "$w×$h" }
+    /** Width and height if already known, otherwise null. */
+    fun size(wallpaper: Wallpaper): Pair<Int, Int>? = when {
+        wallpaper.width > 0 && wallpaper.height > 0 -> wallpaper.width to wallpaper.height
+        else -> cache[wallpaper.fullUrl]
     }
 
+    /** "1920×1080" if the size is already known, otherwise null. */
+    fun label(wallpaper: Wallpaper): String? = size(wallpaper)?.let { (w, h) -> "$w×$h" }
+
     /**
-     * Delivers the label on the main thread. For your own images call this after the image
-     * has loaded, so the file is in Coil's disk cache. Does nothing if the size can't be read.
+     * Delivers width and height on the main thread. For your own images call this after the
+     * image has loaded, so the file is in Coil's disk cache. Does nothing if it can't be read.
      */
     @OptIn(ExperimentalCoilApi::class)
-    fun resolve(context: Context, wallpaper: Wallpaper, onResult: (String) -> Unit) {
-        label(wallpaper)?.let { onResult(it); return }
+    fun resolve(context: Context, wallpaper: Wallpaper, onResult: (Pair<Int, Int>) -> Unit) {
+        size(wallpaper)?.let { onResult(it); return }
         val diskCache = context.imageLoader.diskCache ?: return
         executor.execute {
             val size = runCatching {
@@ -44,7 +47,7 @@ object ImageDimensions {
                 }
             }.getOrNull() ?: return@execute
             cache[wallpaper.fullUrl] = size
-            main.post { onResult("${size.first}×${size.second}") }
+            main.post { onResult(size) }
         }
     }
 }

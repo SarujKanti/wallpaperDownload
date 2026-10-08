@@ -19,19 +19,15 @@
         android:paddingEnd="24dp"
         android:paddingBottom="28dp">
 
-        <FrameLayout
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:background="@drawable/bg_logo">
-
-            <ImageView
-                android:layout_width="34dp"
-                android:layout_height="34dp"
-                android:layout_gravity="center"
-                android:importantForAccessibility="no"
-                android:src="@drawable/ic_wallpaper"
-                app:tint="@color/white" />
-        </FrameLayout>
+        <com.google.android.material.imageview.ShapeableImageView
+            android:layout_width="68dp"
+            android:layout_height="68dp"
+            android:importantForAccessibility="no"
+            android:scaleType="centerCrop"
+            android:src="@drawable/wallora_logo"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.Wallora.LogoTile"
+            app:strokeColor="#4DFFFFFF"
+            app:strokeWidth="1dp" />
 
         <TextView
             android:layout_width="wrap_content"

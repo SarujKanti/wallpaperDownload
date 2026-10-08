@@ -6,8 +6,16 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.LinearGradient
+import android.graphics.Shader
+import android.graphics.Typeface
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.TextPaint
+import android.text.style.CharacterStyle
+import android.text.style.UpdateAppearance
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.WindowManager
@@ -16,9 +24,15 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.widget.ViewPager2
+import coil.load
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -27,27 +41,107 @@ import com.skd.wallpaper.R
 import com.skd.wallpaper.data.CategoryRepository
 import com.skd.wallpaper.databinding.ActivityMainDashboardBinding
 import com.skd.wallpaper.databinding.DialogFullscreenPartialBinding
+import com.skd.wallpaper.fragments.FeedHost
 import com.skd.wallpaper.fragments.WallpaperGridFragment
 import com.skd.wallpaper.model.Category
+import com.skd.wallpaper.model.Wallpaper
 import com.skd.wallpaper.utils.AppTheme
 import com.skd.wallpaper.utils.BaseActivity
 import com.skd.wallpaper.utils.ThemeManager
 import kotlinx.coroutines.launch
 
-class MainDashboardActivity : BaseActivity<ActivityMainDashboardBinding>(R.layout.activity_main_dashboard) {
+class MainDashboardActivity :
+    BaseActivity<ActivityMainDashboardBinding>(R.layout.activity_main_dashboard), FeedHost {
 
     // Default tabs plus a tab per non-empty Supabase folder (found during the splash screen)
     private var categories: List<Category> = CategoryRepository.cached ?: Category.DEFAULT
     private lateinit var tabsAdapter: FragmentStateAdapter
 
+    // Header photo per tab (picked from that tab's wallpapers) and the one currently shown
+    private val heroUrls = mutableMapOf<Category, String>()
+    private var heroUrl: String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initHero()
         initToolbar()
         initSearch()
         initTabs()
         if (CategoryRepository.cached == null) {
             // Folder check still running (slow network): add those tabs when it finishes
             lifecycleScope.launch { updateTabs(CategoryRepository.load().await()) }
+        }
+    }
+
+    private fun initHero() {
+        // The header photo runs under the status bar; only its content is pushed below it
+        val contentTop = binding.heroContent.paddingTop
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
+            val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            // Bottom padding keeps the tabs and grid above the navigation bar (3-button or gesture)
+            view.setPadding(bars.left, 0, bars.right, bars.bottom)
+            binding.heroContent.updatePadding(top = contentTop + bars.top)
+            insets
+        }
+        ViewCompat.requestApplyInsets(binding.root)
+
+        // The header never scrolls away, so the status bar always sits on the photo: light icons
+        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = false
+
+        // "Wallora" in a white → pink → purple gradient
+        binding.tvTitle.post {
+            binding.tvTitle.paint.shader = LinearGradient(
+                0f, 0f, binding.tvTitle.width.toFloat(), 0f,
+                intArrayOf(Color.WHITE, Color.parseColor("#FFB3DE"), Color.parseColor("#C77DFF")),
+                null, Shader.TileMode.CLAMP
+            )
+            binding.tvTitle.invalidate()
+        }
+        highlightHeadlineAccent()
+    }
+
+    /** Paints "vibe." in "Find your vibe.✨" with the purple → pink gradient. */
+    private fun highlightHeadlineAccent() {
+        val text = getString(R.string.lbl_headline)
+        val start = text.indexOf(getString(R.string.lbl_headline_accent))
+        if (start < 0) return
+        val end = start + getString(R.string.lbl_headline_accent).length
+        binding.tvHeadline.post {
+            val layout = binding.tvHeadline.layout ?: return@post
+            val startX = layout.getPrimaryHorizontal(start)
+            val endX = layout.getPrimaryHorizontal(end).takeIf { it > startX } ?: (startX + 1f)
+            val gradient = object : CharacterStyle(), UpdateAppearance {
+                override fun updateDrawState(paint: TextPaint) {
+                    paint.shader = LinearGradient(
+                        startX, 0f, endX, 0f,
+                        Color.parseColor("#C77DFF"), Color.parseColor("#FF5FA2"), Shader.TileMode.CLAMP
+                    )
+                }
+            }
+            binding.tvHeadline.text = SpannableString(text).apply {
+                setSpan(gradient, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            }
+        }
+    }
+
+    override fun onFeedLoaded(category: Category, items: List<Wallpaper>) {
+        val url = heroUrls.getOrPut(category) { pickHeroUrl(items) ?: return }
+        if (categories.getOrNull(binding.viewPager.currentItem) == category) showHero(url)
+    }
+
+    /** A sharp but not too heavy picture: the first full image up to ~5 MB, else the thumbnail. */
+    private fun pickHeroUrl(items: List<Wallpaper>): String? =
+        items.take(6).firstOrNull { it.fileSize in 1..5_000_000 }?.fullUrl ?: items.firstOrNull()?.thumbUrl
+
+    private fun showHero(url: String) {
+        if (url == heroUrl) return
+        heroUrl = url
+        val current = binding.ivHero.drawable
+        binding.ivHero.load(url) {
+            crossfade(600)
+            // Keep the previous photo on screen until the new one is ready
+            placeholder(current)
+            error(current)
         }
     }
 
@@ -103,6 +197,12 @@ class MainDashboardActivity : BaseActivity<ActivityMainDashboardBinding>(R.layou
         }
         binding.viewPager.adapter = tabsAdapter
         binding.viewPager.offscreenPageLimit = 1
+        binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                // The header photo follows the selected tab
+                categories.getOrNull(position)?.let { heroUrls[it] }?.let { showHero(it) }
+            }
+        })
 
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
             val view = LayoutInflater.from(this).inflate(R.layout.tab_item, binding.tabLayout, false) as TextView
@@ -124,8 +224,11 @@ class MainDashboardActivity : BaseActivity<ActivityMainDashboardBinding>(R.layou
     private fun styleTab(tab: TabLayout.Tab, selected: Boolean) {
         val view = tab.customView as? TextView ?: return
         view.setBackgroundResource(if (selected) R.drawable.tab_background_selected else R.drawable.tab_background_default)
-        view.setTextColor(ContextCompat.getColor(this, if (selected) R.color.white else R.color.text_secondary))
-        view.animate().scaleX(if (selected) 1.05f else 1f).scaleY(if (selected) 1.05f else 1f).setDuration(150).start()
+        view.setTextColor(ContextCompat.getColor(this, if (selected) R.color.white else R.color.text_primary))
+        // Remember the tab's original font, so deselecting goes back to it (not a bold copy)
+        val baseFont = view.getTag(R.id.tabText) as? Typeface ?: view.typeface.also { view.setTag(R.id.tabText, it) }
+        view.typeface = if (selected) Typeface.create(baseFont, Typeface.BOLD) else baseFont
+        view.animate().scaleX(if (selected) 1.04f else 1f).scaleY(if (selected) 1.04f else 1f).setDuration(150).start()
     }
 
     private fun openLiked() {

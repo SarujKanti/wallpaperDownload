@@ -85,6 +85,16 @@
     <color name="text_secondary">#5E6180</color>
     <color name="text_hint">#9A9CB5</color>
     <color name="like_red">#FF4F6D</color>
+    <color name="card_stroke">#1F000000</color>
+
+    <!-- Dark navy from the edge of the Wallora logo: icon and splash background -->
+    <color name="ic_launcher_bg">#080834</color>
+
+    <!-- Wallpaper screen: always dark (it sits on a photo), so these are not in values-night -->
+    <color name="preview_text">#FFFFFF</color>
+    <color name="preview_text_secondary">#A3A6C2</color>
+    <color name="preview_button_bg">#161624</color>
+    <color name="preview_button_stroke">#2A2A40</color>
 
 
 

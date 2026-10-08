@@ -43,6 +43,21 @@
         <item name="cornerSize">24dp</item>
     </style>
 
+    <!-- Header photo: square top (under the status bar), rounded bottom edge -->
+    <style name="ShapeAppearance.Wallora.HeroBottom" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopLeft">0dp</item>
+        <item name="cornerSizeTopRight">0dp</item>
+        <item name="cornerSizeBottomLeft">28dp</item>
+        <item name="cornerSizeBottomRight">28dp</item>
+    </style>
+
+    <!-- Rounded tile for the Wallora logo (splash screen, drawer header) -->
+    <style name="ShapeAppearance.Wallora.LogoTile" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">22%</item>
+    </style>
+
     <style name="SideDrawerDialog" parent="Theme.Material3.DayNight.Dialog">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowNoTitle">true</item>
@@ -59,7 +74,7 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginTop">6dp</item>
-        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:textColor">@color/preview_text_secondary</item>
         <item name="android:textSize">12sp</item>
     </style>
 
@@ -67,9 +82,9 @@
         <item name="android:layout_width">52dp</item>
         <item name="android:layout_height">52dp</item>
         <item name="android:padding">14dp</item>
-        <item name="android:background">@drawable/bg_icon_button</item>
+        <item name="android:background">@drawable/bg_preview_button</item>
         <item name="android:foreground">?attr/selectableItemBackgroundBorderless</item>
-        <item name="tint">@color/text_primary</item>
+        <item name="tint">@color/preview_text</item>
     </style>
 
     <style name="DrawerItem">
