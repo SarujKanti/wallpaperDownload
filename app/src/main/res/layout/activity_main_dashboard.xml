@@ -77,6 +77,7 @@
                     app:tint="@color/like_red" />
 
                 <LinearLayout
+                    android:id="@+id/titleBlock"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
@@ -109,7 +110,7 @@
                             android:importantForAccessibility="no"
                             android:rotation="20"
                             android:text="👑"
-                            android:textSize="13sp"
+                            android:textSize="12sp"
                             android:translationY="-7dp" />
                     </LinearLayout>
 
@@ -123,6 +124,15 @@
                         android:textColor="#E6FFFFFF"
                         android:textSize="12sp" />
                 </LinearLayout>
+
+                <!-- Bottom of the top bar: the taller of the buttons and the title block
+                     (the title grows with the user's font size) -->
+                <androidx.constraintlayout.widget.Barrier
+                    android:id="@+id/topBarBottom"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:barrierDirection="bottom"
+                    app:constraint_referenced_ids="ivMore,titleBlock,ivLiked" />
 
                 <!-- Headline shrinks to fit the space left between the top bar and the search -->
                 <TextView
@@ -143,7 +153,7 @@
                     app:layout_constraintBottom_toTopOf="@id/searchBar"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ivMore" />
+                    app:layout_constraintTop_toBottomOf="@id/topBarBottom" />
 
                 <!-- Search -->
                 <LinearLayout
@@ -181,7 +191,7 @@
                         android:maxLines="1"
                         android:textColor="@color/white"
                         android:textColorHint="#B3FFFFFF"
-                        android:textSize="14sp" />
+                        android:textSize="12sp" />
 
                     <ImageView
                         android:id="@+id/btnSearch"

@@ -5,11 +5,13 @@ import android.app.DownloadManager
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.LinearGradient
 import android.graphics.Shader
 import android.graphics.Typeface
 import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.Spanned
@@ -18,6 +20,8 @@ import android.text.style.CharacterStyle
 import android.text.style.UpdateAppearance
 import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.ViewGroup
+import android.view.Window
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -27,6 +31,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -239,12 +244,8 @@ class MainDashboardActivity :
         val dialog = Dialog(this, R.style.SideDrawerDialog)
         val drawer = DialogFullscreenPartialBinding.inflate(layoutInflater)
         dialog.setContentView(drawer.root)
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-        // 80% of screen width, full height, anchored to the left like a navigation drawer
-        val width = (resources.displayMetrics.widthPixels * 0.8).toInt()
-        dialog.window?.setLayout(width, WindowManager.LayoutParams.MATCH_PARENT)
-        dialog.window?.setGravity(Gravity.START)
+        dialog.window?.let { window -> setUpDrawerWindow(window) }
+        padDrawerForSystemBars(drawer)
 
         drawer.tvVersion.text = getString(R.string.lbl_version, BuildConfig.VERSION_NAME)
         drawer.menuExplore.setOnClickListener {
@@ -259,7 +260,7 @@ class MainDashboardActivity :
             dialog.dismiss()
             openDownloads()
         }
-        drawer.menuTheme.text = getString(R.string.lbl_menu_theme_value, getString(ThemeManager.current(this).label))
+        drawer.tvThemeValue.text = getString(ThemeManager.current(this).label)
         drawer.menuTheme.setOnClickListener {
             dialog.dismiss()
             chooseTheme()
@@ -277,6 +278,50 @@ class MainDashboardActivity :
                 .show()
         }
         dialog.show()
+    }
+
+    /**
+     * Full-height drawer on the left, drawn behind the status and navigation bars like a real
+     * navigation drawer. Width is 82% of the screen, capped so it isn't huge on tablets/landscape.
+     */
+    private fun setUpDrawerWindow(window: Window) {
+        window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        val maxWidth = (DRAWER_MAX_WIDTH_DP * resources.displayMetrics.density).toInt()
+        val width = minOf((resources.displayMetrics.widthPixels * 0.82).toInt(), maxWidth)
+        window.setLayout(width, WindowManager.LayoutParams.MATCH_PARENT)
+        window.setGravity(Gravity.START)
+
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        window.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            // Dialogs avoid the system bars by default on Android 11+; let this one go under them
+            window.attributes = window.attributes.apply { setFitInsetsTypes(0) }
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            window.attributes = window.attributes.apply {
+                layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+            }
+        }
+        // White status bar icons on the gradient header; nav bar icons follow the theme
+        WindowCompat.getInsetsController(window, window.decorView).apply {
+            isAppearanceLightStatusBars = false
+            isAppearanceLightNavigationBars =
+                (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) != Configuration.UI_MODE_NIGHT_YES
+        }
+    }
+
+    /** Keeps the drawer's header text below the status bar and its footer above the nav bar. */
+    private fun padDrawerForSystemBars(drawer: DialogFullscreenPartialBinding) {
+        // Taken from the dashboard, which always receives the real system bar sizes
+        val bars = ViewCompat.getRootWindowInsets(binding.root)
+            ?.getInsets(WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout())
+            ?: return
+        drawer.headerContent.updatePadding(top = drawer.headerContent.paddingTop + bars.top)
+        drawer.drawerFooter.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+            bottomMargin += bars.bottom
+            marginStart += bars.left
+        }
+        drawer.headerContent.updatePadding(left = drawer.headerContent.paddingLeft + bars.left)
     }
 
     private fun chooseTheme() {
@@ -309,5 +354,10 @@ class MainDashboardActivity :
                 getString(R.string.lbl_menu_share)
             )
         )
+    }
+
+    companion object {
+        // Like Material's navigation drawer: never wider than this, even on tablets/landscape
+        private const val DRAWER_MAX_WIDTH_DP = 360
     }
 }
