@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Tinted glass: the purple → pink gradient is slightly see-through so the blur shows -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
     <corners android:topRightRadius="28dp" />
     <gradient
         android:angle="315"
-        android:endColor="@color/accent_pink"
-        android:startColor="@color/accent_purple" />
+        android:endColor="#D9FF4F9A"
+        android:startColor="#D97C4DFF" />
 </shape>
