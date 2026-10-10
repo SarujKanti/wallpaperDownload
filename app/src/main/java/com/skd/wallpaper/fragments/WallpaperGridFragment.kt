@@ -18,6 +18,7 @@ import com.skd.wallpaper.data.FavoritesStore
 import com.skd.wallpaper.databinding.FragmentWallpaperGridBinding
 import com.skd.wallpaper.model.Category
 import com.skd.wallpaper.model.Wallpaper
+import com.skd.wallpaper.utils.DeviceUtils
 
 /** Lets the screen hosting the grids (the dashboard) react to a tab's wallpapers, e.g. for its header photo. */
 interface FeedHost {
@@ -67,8 +68,10 @@ class WallpaperGridFragment : Fragment() {
                 refreshLikes()
             }
         )
-        // All cards share the same 4:5 shape, so a plain 2-column grid keeps rows aligned
-        val layoutManager = GridLayoutManager(requireContext(), 2)
+        // All cards share the same 4:5 shape, so a plain grid keeps rows aligned.
+        // Phone: 2 columns. Tablet: 3 in portrait, 4 in landscape (see DeviceUtils).
+        val columns = DeviceUtils.gridColumns(requireContext())
+        val layoutManager = GridLayoutManager(requireContext(), columns)
         binding.recyclerView.layoutManager = layoutManager
         binding.recyclerView.adapter = adapter
         binding.recyclerView.setHasFixedSize(true)
@@ -77,7 +80,7 @@ class WallpaperGridFragment : Fragment() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 if (dy <= 0 || category.isLiked) return
                 val lastVisible = layoutManager.findLastVisibleItemPosition()
-                if (lastVisible >= adapter.itemCount - PRELOAD_THRESHOLD) viewModel.loadMore()
+                if (lastVisible >= adapter.itemCount - PRELOAD_ROWS * columns) viewModel.loadMore()
             }
         })
 
@@ -160,7 +163,8 @@ class WallpaperGridFragment : Fragment() {
 
     companion object {
         private const val ARG_CATEGORY = "category"
-        private const val PRELOAD_THRESHOLD = 6
+        // Start loading the next page this many rows before the end
+        private const val PRELOAD_ROWS = 3
 
         fun newInstance(category: Category) = WallpaperGridFragment().apply {
             arguments = Bundle().apply { putSerializable(ARG_CATEGORY, category) }
