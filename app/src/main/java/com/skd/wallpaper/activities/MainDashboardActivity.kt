@@ -10,7 +10,7 @@ import android.graphics.Color
 import android.graphics.LinearGradient
 import android.graphics.Shader
 import android.graphics.Typeface
-import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.GradientDrawable
 import android.os.Build
 import android.os.Bundle
 import android.text.SpannableString
@@ -23,6 +23,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager
+import android.view.animation.OvershootInterpolator
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
@@ -31,6 +32,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.doOnLayout
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
@@ -68,6 +70,7 @@ class MainDashboardActivity :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        startNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
         initHero()
         initToolbar()
         initSearch()
@@ -86,12 +89,30 @@ class MainDashboardActivity :
             // Bottom padding keeps the tabs and grid above the navigation bar (3-button or gesture)
             view.setPadding(bars.left, 0, bars.right, bars.bottom)
             binding.heroContent.updatePadding(top = contentTop + bars.top)
+            // When the header scrolls away, a status-bar-high strip of it stays, so the pinned
+            // tabs sit just below the status bar (that strip is covered by the scrim below)
+            binding.hero.minimumHeight = bars.top
+            binding.statusBarScrim.updateLayoutParams { height = bars.top }
             insets
         }
         ViewCompat.requestApplyInsets(binding.root)
 
-        // The header never scrolls away, so the status bar always sits on the photo: light icons
-        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = false
+        // Header = 25% of the screen height (photo included under the status bar)
+        binding.root.doOnLayout { root ->
+            binding.hero.updateLayoutParams { height = (root.height * HERO_HEIGHT_FRACTION).toInt() }
+        }
+
+        // Light status bar icons over the photo; theme-colored once the tabs reach the top
+        setDarkStatusIcons(false)
+        binding.appBar.addOnOffsetChangedListener { appBar, offset ->
+            val range = appBar.totalScrollRange
+            if (range <= 0) return@addOnOffsetChangedListener
+            val progress = -offset / range.toFloat()
+            // Fade a solid page-colored background in behind the status bar over the last part
+            // of the scroll, so the photo never shows through above the pinned tabs
+            binding.statusBarScrim.alpha = ((progress - 0.75f) / 0.25f).coerceIn(0f, 1f)
+            setDarkStatusIcons(progress >= 0.9f && !isNightMode())
+        }
 
         // "Wallora" in a white → pink → purple gradient
         binding.tvTitle.post {
@@ -106,6 +127,47 @@ class MainDashboardActivity :
     }
 
     /** Paints "vibe." in "Find your vibe.✨" with the purple → pink gradient. */
+    /**
+     * Light/dark changes (from the drawer's Theme option, or the phone's dark mode when the
+     * theme follows the system) are handled here instead of by an automatic restart: the manifest
+     * declares configChanges="uiMode". AppCompat's in-place restart reuses the old window, which
+     * then loses edge-to-edge (header photo pushed below the status bar, icons invisible), so
+     * the dashboard reopens itself in a fresh window instead.
+     */
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        // Phone switched dark mode while the theme follows the system
+        if ((newConfig.uiMode and Configuration.UI_MODE_NIGHT_MASK) != startNightMode) reopenForNewTheme()
+    }
+
+    private var reopening = false
+
+    /** Reopens the dashboard in a fresh window so it picks up the new light/dark theme. */
+    private fun reopenForNewTheme() {
+        if (reopening) return
+        reopening = true
+        // Keep the selected tab across the reopen
+        val currentTab = categories.getOrNull(binding.viewPager.currentItem)?.title
+        startActivity(Intent(this, MainDashboardActivity::class.java).putExtra(EXTRA_TAB, currentTab))
+        finish()
+        @Suppress("DEPRECATION")
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+    }
+
+    // Light/dark mode this screen was created with
+    private var startNightMode = 0
+
+    private var darkStatusIcons: Boolean? = null
+
+    private fun setDarkStatusIcons(dark: Boolean) {
+        if (darkStatusIcons == dark) return
+        darkStatusIcons = dark
+        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = dark
+    }
+
+    private fun isNightMode() =
+        (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
+
     private fun highlightHeadlineAccent() {
         val text = getString(R.string.lbl_headline)
         val start = text.indexOf(getString(R.string.lbl_headline_accent))
@@ -202,6 +264,10 @@ class MainDashboardActivity :
         }
         binding.viewPager.adapter = tabsAdapter
         binding.viewPager.offscreenPageLimit = 1
+        // Reopened after a theme change: go back to the tab that was open
+        intent.getStringExtra(EXTRA_TAB)?.let { title ->
+            categories.indexOfFirst { it.title == title }.takeIf { it > 0 }?.let { binding.viewPager.setCurrentItem(it, false) }
+        }
         binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 // The header photo follows the selected tab
@@ -210,9 +276,10 @@ class MainDashboardActivity :
         })
 
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
-            val view = LayoutInflater.from(this).inflate(R.layout.tab_item, binding.tabLayout, false) as TextView
+            val view = LayoutInflater.from(this).inflate(R.layout.tab_item, binding.tabLayout, false)
             val category = categories[position]
-            view.text = "${category.emoji}  ${category.title}"
+            view.findViewById<TextView>(R.id.tabEmoji).text = category.emoji
+            view.findViewById<TextView>(R.id.tabText).text = category.title
             tab.customView = view
         }.attach()
 
@@ -227,13 +294,27 @@ class MainDashboardActivity :
     }
 
     private fun styleTab(tab: TabLayout.Tab, selected: Boolean) {
-        val view = tab.customView as? TextView ?: return
+        val view = tab.customView ?: return
+        val emoji = view.findViewById<TextView>(R.id.tabEmoji)
+        val label = view.findViewById<TextView>(R.id.tabText)
+        val wasSelected = view.getTag(R.id.tabRoot) == true
+        view.setTag(R.id.tabRoot, selected)
+
         view.setBackgroundResource(if (selected) R.drawable.tab_background_selected else R.drawable.tab_background_default)
-        view.setTextColor(ContextCompat.getColor(this, if (selected) R.color.white else R.color.text_primary))
-        // Remember the tab's original font, so deselecting goes back to it (not a bold copy)
-        val baseFont = view.getTag(R.id.tabText) as? Typeface ?: view.typeface.also { view.setTag(R.id.tabText, it) }
-        view.typeface = if (selected) Typeface.create(baseFont, Typeface.BOLD) else baseFont
-        view.animate().scaleX(if (selected) 1.04f else 1f).scaleY(if (selected) 1.04f else 1f).setDuration(150).start()
+        emoji.setBackgroundResource(if (selected) R.drawable.bg_tab_emoji_selected else R.drawable.bg_tab_emoji)
+        label.setTextColor(ContextCompat.getColor(this, if (selected) R.color.white else R.color.text_primary))
+        // Remember the label's original font, so deselecting goes back to it (not a bold copy)
+        val baseFont = label.getTag(R.id.tabText) as? Typeface ?: label.typeface.also { label.setTag(R.id.tabText, it) }
+        label.typeface = if (selected) Typeface.create(baseFont, Typeface.BOLD) else baseFont
+
+        view.animate().scaleX(if (selected) 1.04f else 1f).scaleY(if (selected) 1.04f else 1f).setDuration(180).start()
+        if (selected && !wasSelected) {
+            // Little bounce of the emoji when a tab gets picked
+            emoji.scaleX = 0.6f
+            emoji.scaleY = 0.6f
+            emoji.animate().scaleX(1f).scaleY(1f).setDuration(320)
+                .setInterpolator(OvershootInterpolator(2.2f)).start()
+        }
     }
 
     private fun openLiked() {
@@ -285,7 +366,7 @@ class MainDashboardActivity :
      * navigation drawer. Width is 82% of the screen, capped so it isn't huge on tablets/landscape.
      */
     private fun setUpDrawerWindow(window: Window) {
-        window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        applyGlass(window)
         val maxWidth = (DRAWER_MAX_WIDTH_DP * resources.displayMetrics.density).toInt()
         val width = minOf((resources.displayMetrics.widthPixels * 0.82).toInt(), maxWidth)
         window.setLayout(width, WindowManager.LayoutParams.MATCH_PARENT)
@@ -310,6 +391,34 @@ class MainDashboardActivity :
         }
     }
 
+    /**
+     * iOS-style frosted glass. On Android 12+ the drawer blurs the app behind it (and the dimmed
+     * screen behind is blurred too); the window background is the see-through panel drawn on
+     * top of that blur. Where blur isn't available (Android 11 and older, or turned off by the
+     * system, e.g. battery saver) a more opaque frosted color keeps everything readable.
+     */
+    private fun applyGlass(window: Window) {
+        val density = resources.displayMetrics.density
+        val canBlur = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && windowManager.isCrossWindowBlurEnabled
+        val panel = GradientDrawable().apply {
+            val r = 28 * density
+            // Rounded on the right edge only (the left edge is the screen edge)
+            cornerRadii = floatArrayOf(0f, 0f, r, r, r, r, 0f, 0f)
+            setColor(ContextCompat.getColor(this@MainDashboardActivity,
+                if (canBlur) R.color.glass_panel else R.color.glass_panel_solid))
+            setStroke((1 * density).toInt(), ContextCompat.getColor(this@MainDashboardActivity, R.color.glass_stroke))
+        }
+        window.setBackgroundDrawable(panel)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && canBlur) {
+            window.setBackgroundBlurRadius((40 * density).toInt())
+            window.addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND)
+            window.attributes = window.attributes.apply {
+                blurBehindRadius = (12 * density).toInt()
+                dimAmount = 0.25f
+            }
+        }
+    }
+
     /** Keeps the drawer's header text below the status bar and its footer above the nav bar. */
     private fun padDrawerForSystemBars(drawer: DialogFullscreenPartialBinding) {
         // Taken from the dashboard, which always receives the real system bar sizes
@@ -331,8 +440,11 @@ class MainDashboardActivity :
             .setTitle(R.string.lbl_choose_theme)
             .setSingleChoiceItems(themes.map { getString(it.label) }.toTypedArray(), selected) { dialog, which ->
                 dialog.dismiss()
-                // Recreates open screens with the new light/dark resources
+                if (themes[which] == ThemeManager.current(this)) return@setSingleChoiceItems
                 ThemeManager.set(this, themes[which])
+                // This screen handles uiMode changes itself (see onConfigurationChanged), so
+                // AppCompat won't restart it: reopen it with the new theme
+                reopenForNewTheme()
             }
             .show()
     }
@@ -359,5 +471,7 @@ class MainDashboardActivity :
     companion object {
         // Like Material's navigation drawer: never wider than this, even on tablets/landscape
         private const val DRAWER_MAX_WIDTH_DP = 360
+        private const val EXTRA_TAB = "selected_tab"
+        private const val HERO_HEIGHT_FRACTION = 0.25f
     }
 }
