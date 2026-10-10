@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.os.Build
@@ -19,6 +20,7 @@ import androidx.core.content.IntentCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
+import androidx.core.widget.TextViewCompat
 import androidx.lifecycle.lifecycleScope
 import coil.load
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -34,6 +36,7 @@ import com.skd.wallpaper.utils.formatCount
 import com.skd.wallpaper.utils.formatFileSize
 import com.skd.wallpaper.utils.shareWallpaper
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class WallpaperPreviewActivity : AppCompatActivity() {
@@ -42,6 +45,7 @@ class WallpaperPreviewActivity : AppCompatActivity() {
     private lateinit var wallpaper: Wallpaper
     private var downloadJob: Job? = null
     private var controlsVisible = true
+    private var isDownloaded = false
 
     private val storagePermission = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -49,6 +53,11 @@ class WallpaperPreviewActivity : AppCompatActivity() {
         if (granted) startDownload()
         else Toast.makeText(this, R.string.msg_permission_needed, Toast.LENGTH_LONG).show()
     }
+
+    // Read access lets us also find downloads the app no longer "owns" (e.g. after a reinstall)
+    private val readPermission = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { refreshDownloadState() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // Always sits on a photo: light status bar icons and fixed dark colors (preview_* colors).
@@ -69,6 +78,36 @@ class WallpaperPreviewActivity : AppCompatActivity() {
         loadImage()
         setupActions()
         animatePanelIn()
+
+        if (!WallpaperDownloader.hasReadPermission(this) && !readPermissionAsked) {
+            // Ask once per app run, not on every wallpaper
+            readPermissionAsked = true
+            readPermission.launch(WallpaperDownloader.readPermission)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Re-check every time: the user may have deleted the image from the gallery meanwhile
+        refreshDownloadState()
+    }
+
+    /** "Download" or "Redownload", depending on whether the image is already on the device. */
+    private fun refreshDownloadState() {
+        lifecycleScope.launch {
+            isDownloaded = WallpaperDownloader.isDownloaded(applicationContext, wallpaper)
+            if (downloadJob?.isActive != true) showDownloadLabel()
+        }
+    }
+
+    private fun showDownloadLabel() {
+        binding.tvDownload.setText(if (isDownloaded) R.string.lbl_redownload else R.string.lbl_download)
+        binding.tvDownload.setCompoundDrawablesRelativeWithIntrinsicBounds(
+            if (isDownloaded) R.drawable.ic_refresh else R.drawable.ic_download, 0, 0, 0
+        )
+        TextViewCompat.setCompoundDrawableTintList(
+            binding.tvDownload, ColorStateList.valueOf(ContextCompat.getColor(this, R.color.white))
+        )
     }
 
     private fun applyInsets() {
@@ -185,7 +224,8 @@ class WallpaperPreviewActivity : AppCompatActivity() {
                         }
                         DownloadStatus.Success -> {
                             binding.downloadProgress.progress = 100
-                            binding.tvDownload.text = "Saved ✓"
+                            binding.tvDownload.setText(R.string.lbl_saved)
+                            isDownloaded = true
                             Toast.makeText(this@WallpaperPreviewActivity, R.string.msg_download_done, Toast.LENGTH_LONG).show()
                         }
                         DownloadStatus.Failed -> showDownloadFailed()
@@ -196,11 +236,16 @@ class WallpaperPreviewActivity : AppCompatActivity() {
                 showDownloadFailed()
             }
             binding.downloadProgress.visibility = View.INVISIBLE
+            if (isDownloaded) {
+                // Show "Saved ✓" briefly, then the button offers "Redownload"
+                delay(1500)
+                showDownloadLabel()
+            }
         }
     }
 
     private fun showDownloadFailed() {
-        binding.tvDownload.setText(R.string.lbl_download)
+        showDownloadLabel()
         Toast.makeText(this, R.string.msg_download_failed, Toast.LENGTH_LONG).show()
     }
     // endregion
@@ -276,6 +321,9 @@ class WallpaperPreviewActivity : AppCompatActivity() {
 
     companion object {
         private const val EXTRA_WALLPAPER = "wallpaper"
+
+        // Ask for read access only once per app run
+        private var readPermissionAsked = false
 
         fun start(context: Context, wallpaper: Wallpaper) {
             context.startActivity(

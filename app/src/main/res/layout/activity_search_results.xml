@@ -39,7 +39,7 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textColor="@color/text_primary"
-                android:textSize="22sp"
+                android:textSize="12sp"
                 android:textStyle="bold" />
 
             <TextView

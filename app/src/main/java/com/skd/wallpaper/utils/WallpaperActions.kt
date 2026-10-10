@@ -1,13 +1,18 @@
 package com.skd.wallpaper.utils
 
+import android.Manifest
 import android.app.DownloadManager
 import android.app.WallpaperManager
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
+import android.os.Build
 import android.os.Environment
+import android.provider.MediaStore
+import androidx.core.content.ContextCompat
 import coil.imageLoader
 import coil.request.ImageRequest
 import coil.request.SuccessResult
@@ -20,6 +25,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
+import java.io.File
 import java.util.Locale
 
 /**
@@ -48,6 +54,46 @@ sealed class DownloadStatus {
 
 object WallpaperDownloader {
 
+    /** Fixed file name per wallpaper, e.g. "wallhaven_abc123.jpg", so downloads can be found again. */
+    fun fileName(wallpaper: Wallpaper): String {
+        val prefix = wallpaper.source.lowercase(Locale.US).replace(Regex("[^a-z0-9]+"), "_")
+        return "${prefix}_${wallpaper.id}.${wallpaper.fileExtension}"
+    }
+
+    @Suppress("DEPRECATION")
+    private fun downloadedFile(wallpaper: Wallpaper) = File(
+        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+        "$DOWNLOAD_FOLDER/${fileName(wallpaper)}"
+    )
+
+    /** Permission needed to see downloaded images: READ_MEDIA_IMAGES on Android 13+, storage before. */
+    val readPermission: String
+        get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) Manifest.permission.READ_MEDIA_IMAGES
+        else Manifest.permission.READ_EXTERNAL_STORAGE
+
+    fun hasReadPermission(context: Context): Boolean =
+        ContextCompat.checkSelfPermission(context, readPermission) == PackageManager.PERMISSION_GRANTED
+
+    /**
+     * True if [wallpaper] is in Pictures/Wallora/Download. Checks the file itself (needs the read
+     * permission for files the app doesn't own) and, on Android 10+, the system media index, which
+     * also finds the app's own downloads without any permission. A file the user deleted counts
+     * as not downloaded.
+     */
+    suspend fun isDownloaded(context: Context, wallpaper: Wallpaper): Boolean = withContext(Dispatchers.IO) {
+        if (runCatching { downloadedFile(wallpaper).exists() }.getOrDefault(false)) return@withContext true
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return@withContext false
+        runCatching {
+            context.contentResolver.query(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                arrayOf(MediaStore.Images.Media._ID),
+                "${MediaStore.Images.Media.DISPLAY_NAME} = ? AND ${MediaStore.Images.Media.RELATIVE_PATH} LIKE ?",
+                arrayOf(fileName(wallpaper), "${Environment.DIRECTORY_PICTURES}/$DOWNLOAD_FOLDER%"),
+                null
+            )?.use { it.count > 0 } ?: false
+        }.getOrDefault(false)
+    }
+
     /**
      * Saves the full-resolution image to Pictures/Wallora/Download using the system
      * DownloadManager (shows a notification and survives the app being closed).
@@ -55,8 +101,10 @@ object WallpaperDownloader {
      */
     fun download(context: Context, wallpaper: Wallpaper): Flow<DownloadStatus> = flow {
         val manager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-        val prefix = wallpaper.source.lowercase(Locale.US).replace(Regex("[^a-z0-9]+"), "_")
-        val fileName = "${prefix}_${wallpaper.id}.${wallpaper.fileExtension}"
+        val fileName = fileName(wallpaper)
+
+        // Redownload: replace the old copy where allowed (otherwise the system saves "name-1.jpg")
+        runCatching { downloadedFile(wallpaper).takeIf { it.exists() }?.delete() }
 
         val request = DownloadManager.Request(Uri.parse(wallpaper.fullUrl))
             .setTitle(fileName)
