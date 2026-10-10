@@ -2,4 +2,7 @@
 <resources>
     <!-- Dark status/navigation bar icons on the light theme -->
     <bool name="light_system_bars">true</bool>
+
+    <!-- Phones (tablets override this in values-sw600dp) -->
+    <bool name="is_tablet">false</bool>
 </resources>
