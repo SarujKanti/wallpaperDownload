@@ -19,6 +19,8 @@
     <string name="lbl_open">Open</string>
     <string name="lbl_unlike">Remove from liked</string>
     <string name="lbl_download">Download</string>
+    <string name="lbl_redownload">Redownload</string>
+    <string name="lbl_saved">Saved ✓</string>
     <string name="lbl_set_wallpaper">Set</string>
     <string name="lbl_like">Like</string>
     <string name="lbl_share">Share</string>

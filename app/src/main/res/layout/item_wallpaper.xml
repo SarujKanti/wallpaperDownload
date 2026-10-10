@@ -44,26 +44,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <!-- Selected tab name, e.g. "🔥 Trending" -->
-        <TextView
-            android:id="@+id/tvBadge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:background="@drawable/bg_card_badge"
-            android:maxLines="1"
-            android:paddingStart="10dp"
-            android:paddingTop="5dp"
-            android:paddingEnd="12dp"
-            android:paddingBottom="5dp"
-            android:textColor="@color/white"
-            android:textSize="12sp"
-            app:layout_constrainedWidth="true"
-            app:layout_constraintEnd_toStartOf="@id/ivLike"
-            app:layout_constraintHorizontal_bias="0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
         <ImageView
             android:id="@+id/ivLike"
             android:layout_width="38dp"

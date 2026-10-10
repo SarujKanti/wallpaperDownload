@@ -9,6 +9,12 @@
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="28" />
+    <!-- Read access to check whether a wallpaper is already in Pictures/Wallora/Download
+         ("Download" vs "Redownload"): READ_MEDIA_IMAGES on Android 13+, storage before that -->
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
 
     <application
         android:name=".WallpaperApp"

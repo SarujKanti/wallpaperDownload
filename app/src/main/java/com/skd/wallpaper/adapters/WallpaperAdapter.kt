@@ -20,7 +20,7 @@ import com.skd.wallpaper.utils.ImageDimensions
 import com.skd.wallpaper.utils.WallpaperText
 import com.skd.wallpaper.utils.shareWallpaper
 
-/** 4:5 wallpaper cards; each card shows the selected tab's name, e.g. "🔥 Trending". */
+/** 4:5 wallpaper cards with a title, "4K • Portrait" info, like button and menu. */
 class WallpaperAdapter(
     private val category: Category,
     private val onClick: (Wallpaper) -> Unit,
@@ -36,7 +36,6 @@ class WallpaperAdapter(
     inner class ViewHolder(val binding: ItemWallpaperBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: Wallpaper) = with(binding) {
-            tvBadge.text = "${category.emoji}  ${category.title}"
             tvTitle.text = WallpaperText.title(item, category)
 
             val size = ImageDimensions.size(item)
