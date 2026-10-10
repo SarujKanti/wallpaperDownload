@@ -6,7 +6,7 @@
     android:id="@+id/dialogRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_drawer"
+    android:background="@android:color/transparent"
     android:orientation="vertical">
 
     <!-- Header -->
@@ -108,54 +108,71 @@
                 android:text="@string/lbl_section_browse" />
 
             <LinearLayout
-                android:id="@+id/menuExplore"
-                style="@style/DrawerRow">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_glass_group"
+                android:orientation="vertical"
+                android:padding="4dp">
+                <LinearLayout
+                    android:id="@+id/menuExplore"
+                    style="@style/DrawerRow">
 
-                <ImageView
-                    style="@style/DrawerRowIcon"
-                    android:backgroundTint="@color/menu_explore_bg"
-                    android:src="@drawable/ic_wallpaper"
-                    app:tint="@color/menu_explore" />
+                    <ImageView
+                        style="@style/DrawerRowIcon"
+                        android:backgroundTint="@color/menu_explore_bg"
+                        android:src="@drawable/ic_wallpaper"
+                        app:tint="@color/menu_explore" />
 
-                <TextView
-                    style="@style/DrawerRowTitle"
-                    android:text="@string/lbl_menu_home" />
+                    <TextView
+                        style="@style/DrawerRowTitle"
+                        android:text="@string/lbl_menu_home" />
 
-                <ImageView style="@style/DrawerRowChevron" />
-            </LinearLayout>
+                    <ImageView style="@style/DrawerRowChevron" />
+                </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/menuLiked"
-                style="@style/DrawerRow">
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.6dp"
+                    android:layout_marginStart="64dp"
+                    android:background="@color/glass_separator" />
+                <LinearLayout
+                    android:id="@+id/menuLiked"
+                    style="@style/DrawerRow">
 
-                <ImageView
-                    style="@style/DrawerRowIcon"
-                    android:backgroundTint="@color/menu_liked_bg"
-                    android:src="@drawable/ic_heart"
-                    app:tint="@color/menu_liked" />
+                    <ImageView
+                        style="@style/DrawerRowIcon"
+                        android:backgroundTint="@color/menu_liked_bg"
+                        android:src="@drawable/ic_heart"
+                        app:tint="@color/menu_liked" />
 
-                <TextView
-                    style="@style/DrawerRowTitle"
-                    android:text="@string/lbl_menu_liked" />
+                    <TextView
+                        style="@style/DrawerRowTitle"
+                        android:text="@string/lbl_menu_liked" />
 
-                <ImageView style="@style/DrawerRowChevron" />
-            </LinearLayout>
+                    <ImageView style="@style/DrawerRowChevron" />
+                </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/menuDownloads"
-                style="@style/DrawerRow">
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.6dp"
+                    android:layout_marginStart="64dp"
+                    android:background="@color/glass_separator" />
+                <LinearLayout
+                    android:id="@+id/menuDownloads"
+                    style="@style/DrawerRow">
 
-                <ImageView
-                    style="@style/DrawerRowIcon"
-                    android:backgroundTint="@color/menu_downloads_bg"
-                    android:src="@drawable/ic_folder"
-                    app:tint="@color/menu_downloads" />
+                    <ImageView
+                        style="@style/DrawerRowIcon"
+                        android:backgroundTint="@color/menu_downloads_bg"
+                        android:src="@drawable/ic_folder"
+                        app:tint="@color/menu_downloads" />
 
-                <TextView
-                    style="@style/DrawerRowTitle"
-                    android:text="@string/lbl_menu_downloads" />
+                    <TextView
+                        style="@style/DrawerRowTitle"
+                        android:text="@string/lbl_menu_downloads" />
 
-                <ImageView style="@style/DrawerRowChevron" />
+                    <ImageView style="@style/DrawerRowChevron" />
+                </LinearLayout>
             </LinearLayout>
 
             <TextView
@@ -163,69 +180,86 @@
                 android:text="@string/lbl_section_more" />
 
             <LinearLayout
-                android:id="@+id/menuTheme"
-                style="@style/DrawerRow">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_glass_group"
+                android:orientation="vertical"
+                android:padding="4dp">
+                <LinearLayout
+                    android:id="@+id/menuTheme"
+                    style="@style/DrawerRow">
 
-                <ImageView
-                    style="@style/DrawerRowIcon"
-                    android:backgroundTint="@color/menu_theme_bg"
-                    android:src="@drawable/ic_theme"
-                    app:tint="@color/menu_theme" />
+                    <ImageView
+                        style="@style/DrawerRowIcon"
+                        android:backgroundTint="@color/menu_theme_bg"
+                        android:src="@drawable/ic_theme"
+                        app:tint="@color/menu_theme" />
 
-                <TextView
-                    style="@style/DrawerRowTitle"
-                    android:text="@string/lbl_menu_theme" />
+                    <TextView
+                        style="@style/DrawerRowTitle"
+                        android:text="@string/lbl_menu_theme" />
 
-                <!-- Current theme, e.g. "System default" -->
-                <TextView
-                    android:id="@+id/tvThemeValue"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="4dp"
-                    android:background="@drawable/bg_value_pill"
-                    android:maxLines="1"
-                    android:paddingStart="10dp"
-                    android:paddingTop="4dp"
-                    android:paddingEnd="10dp"
-                    android:paddingBottom="4dp"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="12sp" />
+                    <!-- Current theme, e.g. "System default" -->
+                    <TextView
+                        android:id="@+id/tvThemeValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="4dp"
+                        android:background="@drawable/bg_value_pill"
+                        android:maxLines="1"
+                        android:paddingStart="10dp"
+                        android:paddingTop="4dp"
+                        android:paddingEnd="10dp"
+                        android:paddingBottom="4dp"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="12sp" />
 
-                <ImageView style="@style/DrawerRowChevron" />
-            </LinearLayout>
+                    <ImageView style="@style/DrawerRowChevron" />
+                </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/menuShare"
-                style="@style/DrawerRow">
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.6dp"
+                    android:layout_marginStart="64dp"
+                    android:background="@color/glass_separator" />
+                <LinearLayout
+                    android:id="@+id/menuShare"
+                    style="@style/DrawerRow">
 
-                <ImageView
-                    style="@style/DrawerRowIcon"
-                    android:backgroundTint="@color/menu_share_bg"
-                    android:src="@drawable/ic_share"
-                    app:tint="@color/menu_share" />
+                    <ImageView
+                        style="@style/DrawerRowIcon"
+                        android:backgroundTint="@color/menu_share_bg"
+                        android:src="@drawable/ic_share"
+                        app:tint="@color/menu_share" />
 
-                <TextView
-                    style="@style/DrawerRowTitle"
-                    android:text="@string/lbl_menu_share" />
+                    <TextView
+                        style="@style/DrawerRowTitle"
+                        android:text="@string/lbl_menu_share" />
 
-                <ImageView style="@style/DrawerRowChevron" />
-            </LinearLayout>
+                    <ImageView style="@style/DrawerRowChevron" />
+                </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/menuAbout"
-                style="@style/DrawerRow">
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.6dp"
+                    android:layout_marginStart="64dp"
+                    android:background="@color/glass_separator" />
+                <LinearLayout
+                    android:id="@+id/menuAbout"
+                    style="@style/DrawerRow">
 
-                <ImageView
-                    style="@style/DrawerRowIcon"
-                    android:backgroundTint="@color/menu_about_bg"
-                    android:src="@drawable/ic_info"
-                    app:tint="@color/menu_about" />
+                    <ImageView
+                        style="@style/DrawerRowIcon"
+                        android:backgroundTint="@color/menu_about_bg"
+                        android:src="@drawable/ic_info"
+                        app:tint="@color/menu_about" />
 
-                <TextView
-                    style="@style/DrawerRowTitle"
-                    android:text="@string/lbl_menu_about" />
+                    <TextView
+                        style="@style/DrawerRowTitle"
+                        android:text="@string/lbl_menu_about" />
 
-                <ImageView style="@style/DrawerRowChevron" />
+                    <ImageView style="@style/DrawerRowChevron" />
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
@@ -238,7 +272,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        android:background="@drawable/bg_drawer_footer"
+        android:background="@drawable/bg_glass_group"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:padding="14dp">
