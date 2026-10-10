@@ -16,4 +16,9 @@
     <color name="glass_group">#1AFFFFFF</color>
     <color name="glass_stroke">#26FFFFFF</color>
     <color name="glass_separator">#1AFFFFFF</color>
+
+    <!-- Category tabs (dark) -->
+    <color name="tab_surface">#1A1A2C</color>
+    <color name="tab_stroke">#2F2A4D</color>
+    <color name="tab_emoji_bg">#2A2547</color>
 </resources>

@@ -23,6 +23,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager
+import android.view.animation.OvershootInterpolator
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
@@ -145,7 +146,9 @@ class MainDashboardActivity :
     private fun reopenForNewTheme() {
         if (reopening) return
         reopening = true
-        startActivity(Intent(this, MainDashboardActivity::class.java))
+        // Keep the selected tab across the reopen
+        val currentTab = categories.getOrNull(binding.viewPager.currentItem)?.title
+        startActivity(Intent(this, MainDashboardActivity::class.java).putExtra(EXTRA_TAB, currentTab))
         finish()
         @Suppress("DEPRECATION")
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
@@ -261,6 +264,10 @@ class MainDashboardActivity :
         }
         binding.viewPager.adapter = tabsAdapter
         binding.viewPager.offscreenPageLimit = 1
+        // Reopened after a theme change: go back to the tab that was open
+        intent.getStringExtra(EXTRA_TAB)?.let { title ->
+            categories.indexOfFirst { it.title == title }.takeIf { it > 0 }?.let { binding.viewPager.setCurrentItem(it, false) }
+        }
         binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 // The header photo follows the selected tab
@@ -269,9 +276,10 @@ class MainDashboardActivity :
         })
 
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
-            val view = LayoutInflater.from(this).inflate(R.layout.tab_item, binding.tabLayout, false) as TextView
+            val view = LayoutInflater.from(this).inflate(R.layout.tab_item, binding.tabLayout, false)
             val category = categories[position]
-            view.text = "${category.emoji}  ${category.title}"
+            view.findViewById<TextView>(R.id.tabEmoji).text = category.emoji
+            view.findViewById<TextView>(R.id.tabText).text = category.title
             tab.customView = view
         }.attach()
 
@@ -286,13 +294,27 @@ class MainDashboardActivity :
     }
 
     private fun styleTab(tab: TabLayout.Tab, selected: Boolean) {
-        val view = tab.customView as? TextView ?: return
+        val view = tab.customView ?: return
+        val emoji = view.findViewById<TextView>(R.id.tabEmoji)
+        val label = view.findViewById<TextView>(R.id.tabText)
+        val wasSelected = view.getTag(R.id.tabRoot) == true
+        view.setTag(R.id.tabRoot, selected)
+
         view.setBackgroundResource(if (selected) R.drawable.tab_background_selected else R.drawable.tab_background_default)
-        view.setTextColor(ContextCompat.getColor(this, if (selected) R.color.white else R.color.text_primary))
-        // Remember the tab's original font, so deselecting goes back to it (not a bold copy)
-        val baseFont = view.getTag(R.id.tabText) as? Typeface ?: view.typeface.also { view.setTag(R.id.tabText, it) }
-        view.typeface = if (selected) Typeface.create(baseFont, Typeface.BOLD) else baseFont
-        view.animate().scaleX(if (selected) 1.04f else 1f).scaleY(if (selected) 1.04f else 1f).setDuration(150).start()
+        emoji.setBackgroundResource(if (selected) R.drawable.bg_tab_emoji_selected else R.drawable.bg_tab_emoji)
+        label.setTextColor(ContextCompat.getColor(this, if (selected) R.color.white else R.color.text_primary))
+        // Remember the label's original font, so deselecting goes back to it (not a bold copy)
+        val baseFont = label.getTag(R.id.tabText) as? Typeface ?: label.typeface.also { label.setTag(R.id.tabText, it) }
+        label.typeface = if (selected) Typeface.create(baseFont, Typeface.BOLD) else baseFont
+
+        view.animate().scaleX(if (selected) 1.04f else 1f).scaleY(if (selected) 1.04f else 1f).setDuration(180).start()
+        if (selected && !wasSelected) {
+            // Little bounce of the emoji when a tab gets picked
+            emoji.scaleX = 0.6f
+            emoji.scaleY = 0.6f
+            emoji.animate().scaleX(1f).scaleY(1f).setDuration(320)
+                .setInterpolator(OvershootInterpolator(2.2f)).start()
+        }
     }
 
     private fun openLiked() {
@@ -449,6 +471,7 @@ class MainDashboardActivity :
     companion object {
         // Like Material's navigation drawer: never wider than this, even on tablets/landscape
         private const val DRAWER_MAX_WIDTH_DP = 360
+        private const val EXTRA_TAB = "selected_tab"
         private const val HERO_HEIGHT_FRACTION = 0.25f
     }
 }

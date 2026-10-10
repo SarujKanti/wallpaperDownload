@@ -103,7 +103,9 @@ class WallpaperGridFragment : Fragment() {
         viewModel.items.observe(viewLifecycleOwner) { list ->
             val firstFill = adapter.itemCount == 0 && list.isNotEmpty()
             adapter.submitList(list) {
-                if (firstFill) binding.recyclerView.scheduleLayoutAnimation()
+                // The list is diffed in the background: by the time it's applied the view may be
+                // gone (e.g. the dashboard reopening for a theme change), so don't assume it exists
+                if (firstFill) _binding?.recyclerView?.scheduleLayoutAnimation()
             }
             if (list.isNotEmpty()) (activity as? FeedHost)?.onFeedLoaded(category, list)
             renderState(viewModel.state.value ?: LoadState.IDLE)
