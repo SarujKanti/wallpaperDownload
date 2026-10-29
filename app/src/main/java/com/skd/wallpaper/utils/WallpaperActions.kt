@@ -1,18 +1,15 @@
 package com.skd.wallpaper.utils
 
-import android.Manifest
 import android.app.DownloadManager
 import android.app.WallpaperManager
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
-import androidx.core.content.ContextCompat
 import coil.imageLoader
 import coil.request.ImageRequest
 import coil.request.SuccessResult
@@ -66,19 +63,11 @@ object WallpaperDownloader {
         "$DOWNLOAD_FOLDER/${fileName(wallpaper)}"
     )
 
-    /** Permission needed to see downloaded images: READ_MEDIA_IMAGES on Android 13+, storage before. */
-    val readPermission: String
-        get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) Manifest.permission.READ_MEDIA_IMAGES
-        else Manifest.permission.READ_EXTERNAL_STORAGE
-
-    fun hasReadPermission(context: Context): Boolean =
-        ContextCompat.checkSelfPermission(context, readPermission) == PackageManager.PERMISSION_GRANTED
-
     /**
-     * True if [wallpaper] is in Pictures/Wallora/Download. Checks the file itself (needs the read
-     * permission for files the app doesn't own) and, on Android 10+, the system media index, which
-     * also finds the app's own downloads without any permission. A file the user deleted counts
-     * as not downloaded.
+     * True if [wallpaper] is in Pictures/Wallora/Download. No read permission is needed: the app
+     * can always see the images it saved itself (the file, and on Android 10+ also the system
+     * media index). Downloads from before a reinstall aren't the app's own anymore, so they count
+     * as not downloaded. A file the user deleted also counts as not downloaded.
      */
     suspend fun isDownloaded(context: Context, wallpaper: Wallpaper): Boolean = withContext(Dispatchers.IO) {
         if (runCatching { downloadedFile(wallpaper).exists() }.getOrDefault(false)) return@withContext true
