@@ -54,11 +54,6 @@ class WallpaperPreviewActivity : AppCompatActivity() {
         else Toast.makeText(this, R.string.msg_permission_needed, Toast.LENGTH_LONG).show()
     }
 
-    // Read access lets us also find downloads the app no longer "owns" (e.g. after a reinstall)
-    private val readPermission = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { refreshDownloadState() }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         // Always sits on a photo: light status bar icons and fixed dark colors (preview_* colors).
         // Don't force night mode here; AppCompat would apply it to shared resources and leak
@@ -78,12 +73,6 @@ class WallpaperPreviewActivity : AppCompatActivity() {
         loadImage()
         setupActions()
         animatePanelIn()
-
-        if (!WallpaperDownloader.hasReadPermission(this) && !readPermissionAsked) {
-            // Ask once per app run, not on every wallpaper
-            readPermissionAsked = true
-            readPermission.launch(WallpaperDownloader.readPermission)
-        }
     }
 
     override fun onResume() {
@@ -321,9 +310,6 @@ class WallpaperPreviewActivity : AppCompatActivity() {
 
     companion object {
         private const val EXTRA_WALLPAPER = "wallpaper"
-
-        // Ask for read access only once per app run
-        private var readPermissionAsked = false
 
         fun start(context: Context, wallpaper: Wallpaper) {
             context.startActivity(
