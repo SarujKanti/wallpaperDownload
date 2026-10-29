@@ -3,6 +3,7 @@ package com.skd.wallpaper.data
 import com.skd.wallpaper.model.Category
 import com.skd.wallpaper.model.Wallpaper
 import com.skd.wallpaper.network.PicsumPhoto
+import com.skd.wallpaper.network.PixabayHit
 import android.net.Uri
 import com.skd.wallpaper.BuildConfig
 import com.skd.wallpaper.network.RetrofitClient
@@ -15,6 +16,8 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import retrofit2.HttpException
 import java.util.Calendar
+import java.util.Locale
+import java.util.concurrent.ConcurrentHashMap
 import kotlin.random.Random
 
 data class WallpaperPage(
@@ -25,6 +28,17 @@ data class WallpaperPage(
 object WallpaperRepository {
 
     private const val PICSUM_PAGE_SIZE = 30
+    private const val PIXABAY_PAGE_SIZE = 30
+    // Fewer photo results than this for a search → use Wallhaven (art/anime terms)
+    private const val PIXABAY_MIN_RESULTS = 6
+    private const val PIXABAY_CACHE_MS = 24 * 60 * 60 * 1000L
+    const val PIXABAY_SOURCE = "Pixabay"
+
+    private enum class SearchSource { PIXABAY, WALLHAVEN }
+
+    // Which source each search term ended up using, so all its pages come from one source
+    private val searchSource = ConcurrentHashMap<String, SearchSource>()
+    private val pixabayCache = ConcurrentHashMap<String, Pair<Long, WallpaperPage>>()
     private const val STORAGE_PAGE_SIZE = 30
     // Mixed tabs fetch the whole (small) folder with the first page, before the online results
     private const val STORAGE_LIMIT = 200
@@ -54,7 +68,11 @@ object WallpaperRepository {
         } else emptyList()
 
         val online = try {
-            if (category.shuffleDaily) loadDailyShuffled(category, page) else loadOnline(category, page)
+            when {
+                category.photoSearch && RetrofitClient.isPixabayConfigured -> loadPhotoSearch(category, page)
+                category.shuffleDaily -> loadDailyShuffled(category, page)
+                else -> loadOnline(category, page)
+            }
         } catch (e: Exception) {
             if (e is kotlinx.coroutines.CancellationException || own.isEmpty()) throw e
             // Online sources failed but we still have your images to show
@@ -145,6 +163,71 @@ object WallpaperRepository {
                 .map { it.toWallpaper(folder) },
             // Judge by the raw count, since filtering can make a full page look short
             hasMore = objects.size == limit
+        )
+    }
+
+    /**
+     * User search: Pixabay photos first, because its images are tagged by what they show
+     * ("cat" → real cats; Wallhaven matches tags like "catgirl"). If Pixabay has too few relevant results
+     * for the term (e.g. "naruto", "cyberpunk") or fails, the whole search uses Wallhaven instead.
+     */
+    private suspend fun loadPhotoSearch(category: Category, page: Int): WallpaperPage {
+        val query = category.query.orEmpty().trim().lowercase(Locale.US)
+        if (page == 1) searchSource.remove(query)
+        if (searchSource[query] == SearchSource.WALLHAVEN) return loadOnline(category, page)
+
+        val photos = runCatching { loadPixabay(query, page) }.getOrNull()
+        if (page == 1 && (photos == null || photos.items.size < PIXABAY_MIN_RESULTS)) {
+            searchSource[query] = SearchSource.WALLHAVEN
+            return loadOnline(category, page)
+        }
+        searchSource[query] = SearchSource.PIXABAY
+        return photos ?: WallpaperPage(emptyList(), hasMore = false)
+    }
+
+    private suspend fun loadPixabay(query: String, page: Int): WallpaperPage {
+        val cacheKey = "$query#$page"
+        pixabayCache[cacheKey]?.takeIf { System.currentTimeMillis() - it.first < PIXABAY_CACHE_MS }
+            ?.let { return it.second }
+
+        val response = RetrofitClient.pixabay.search(
+            key = BuildConfig.PIXABAY_API_KEY,
+            query = query,
+            page = page,
+            perPage = PIXABAY_PAGE_SIZE
+        )
+        // Keep only photos whose tags mention every search word: "one piece" otherwise matches
+        // swimsuits and "dragon ball" random balls, which then correctly falls back to Wallhaven
+        val words = query.split(' ').filter { it.isNotBlank() }.map { it.removeSuffix("s") }
+        val relevant = response.hits.filter { hit ->
+            val tags = hit.tags.orEmpty().lowercase(Locale.US)
+            words.all { it in tags }
+        }
+        // Pixabay serves at most 500 results per search (totalHits)
+        val result = WallpaperPage(
+            items = relevant.map { it.toWallpaper() },
+            hasMore = page * PIXABAY_PAGE_SIZE < response.totalHits
+        )
+        // Pixabay asks API users to cache results for 24 hours (its image URLs also expire then)
+        pixabayCache[cacheKey] = System.currentTimeMillis() to result
+        return result
+    }
+
+    private fun PixabayHit.toWallpaper(): Wallpaper {
+        // largeImageURL is scaled to at most 1280px on the long side; report that real size
+        val scale = minOf(1f, 1280f / maxOf(width, height, 1))
+        return Wallpaper(
+            id = id.toString(),
+            thumbUrl = webformatUrl,
+            fullUrl = largeImageUrl,
+            width = (width * scale).toInt(),
+            height = (height * scale).toInt(),
+            author = user,
+            source = PIXABAY_SOURCE,
+            pageUrl = pageUrl,
+            views = views,
+            fileType = "image/jpeg",
+            category = tags?.substringBefore(',')?.trim()
         )
     }
 

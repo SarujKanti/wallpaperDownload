@@ -1,6 +1,7 @@
 package com.skd.wallpaper.utils
 
 import android.graphics.Color
+import com.skd.wallpaper.data.WallpaperRepository
 import com.skd.wallpaper.model.Category
 import com.skd.wallpaper.model.Wallpaper
 import java.util.Locale
@@ -13,6 +14,10 @@ object WallpaperText {
      * so one is made from the image's dominant color and the tab, e.g. "Violet Landscape".
      */
     fun title(wallpaper: Wallpaper, category: Category): String {
+        // Pixabay: name the photo by its main tag (e.g. "Kitten"); "author" is the photographer
+        if (wallpaper.source == WallpaperRepository.PIXABAY_SOURCE) {
+            wallpaper.category?.takeIf { it.isNotBlank() }?.let { return it.toTitleCase() }
+        }
         wallpaper.author?.takeIf { it.isNotBlank() }?.let { return it.toTitleCase() }
         val noun = when {
             category.isLiked -> "Wallpaper"

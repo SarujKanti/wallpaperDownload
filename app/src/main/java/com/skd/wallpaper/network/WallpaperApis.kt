@@ -110,3 +110,42 @@ data class SupabaseMetadata(
     @SerializedName("size") val size: Long = 0,
     @SerializedName("mimetype") val mimeType: String?
 )
+
+/**
+ * Pixabay photo search (free key in local.properties). Images are tagged by what they show,
+ * so "cat" returns real cats; used for the search screen. Returned URLs are only valid for
+ * about 24 hours, so results are cached per query for at most that long.
+ */
+interface PixabayApi {
+
+    @GET("api/")
+    suspend fun search(
+        @Query("key") key: String,
+        @Query("q") query: String,
+        @Query("page") page: Int = 1,
+        @Query("per_page") perPage: Int = 30,
+        @Query("image_type") imageType: String = "photo",
+        @Query("orientation") orientation: String = "vertical",
+        @Query("safesearch") safeSearch: Boolean = true,
+        @Query("order") order: String = "popular"
+    ): PixabayResponse
+}
+
+data class PixabayResponse(
+    @SerializedName("totalHits") val totalHits: Int = 0,
+    @SerializedName("hits") val hits: List<PixabayHit> = emptyList()
+)
+
+data class PixabayHit(
+    @SerializedName("id") val id: Long,
+    @SerializedName("pageURL") val pageUrl: String?,
+    @SerializedName("tags") val tags: String?,
+    @SerializedName("webformatURL") val webformatUrl: String,
+    @SerializedName("largeImageURL") val largeImageUrl: String,
+    @SerializedName("imageWidth") val width: Int = 0,
+    @SerializedName("imageHeight") val height: Int = 0,
+    @SerializedName("imageSize") val imageSize: Long = 0,
+    @SerializedName("views") val views: Int = 0,
+    @SerializedName("likes") val likes: Int = 0,
+    @SerializedName("user") val user: String?
+)

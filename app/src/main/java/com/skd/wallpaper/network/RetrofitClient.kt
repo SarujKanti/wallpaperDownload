@@ -8,16 +8,18 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 /**
- * Wallpaper sources (Wallhaven and Picsum are free and need no API key):
+ * Wallpaper sources (Wallhaven and Picsum need no API key):
  *  - Wallhaven (https://wallhaven.cc/help/api) – real wallpapers, search, categories, colors.
  *    Only SFW content is requested (purity=100).
  *  - Lorem Picsum (https://picsum.photos) – used as a fallback if Wallhaven is unreachable.
  *  - Supabase Storage – your own uploaded wallpapers (URL + anon key from local.properties).
+ *  - Pixabay – accurate photo search (free key from local.properties).
  */
 object RetrofitClient {
 
     private const val WALLHAVEN_URL = "https://wallhaven.cc/api/v1/"
     private const val PICSUM_URL = "https://picsum.photos/"
+    private const val PIXABAY_URL = "https://pixabay.com/"
 
     private val client: OkHttpClient by lazy {
         OkHttpClient.Builder()
@@ -58,6 +60,10 @@ object RetrofitClient {
 
     val wallhaven: WallhavenApi by lazy { retrofit(WALLHAVEN_URL).create(WallhavenApi::class.java) }
     val picsum: PicsumApi by lazy { retrofit(PICSUM_URL).create(PicsumApi::class.java) }
+    val pixabay: PixabayApi by lazy { retrofit(PIXABAY_URL).create(PixabayApi::class.java) }
+
+    val isPixabayConfigured: Boolean get() = BuildConfig.PIXABAY_API_KEY.isNotBlank()
+
     val supabase: SupabaseStorageApi by lazy {
         retrofit(BuildConfig.SUPABASE_URL.trimEnd('/') + "/", supabaseClient).create(SupabaseStorageApi::class.java)
     }
