@@ -30,6 +30,7 @@ android {
 
         buildConfigField("String", "SUPABASE_URL", "\"${localProps.getProperty("SUPABASE_URL", "")}\"")
         buildConfigField("String", "SUPABASE_ANON_KEY", "\"${localProps.getProperty("SUPABASE_ANON_KEY", "")}\"")
+        buildConfigField("String", "PIXABAY_API_KEY", "\"${localProps.getProperty("PIXABAY_API_KEY", "")}\"")
     }
 
     buildTypes {

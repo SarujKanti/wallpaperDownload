@@ -19,6 +19,8 @@ data class Category(
     val storageFolder: String? = null,
     // Show the feed in a new random order every day (same order all day, also across pages)
     val shuffleDaily: Boolean = false,
+    // User searches: try accurate photo search (Pixabay) first, Wallhaven art as fallback
+    val photoSearch: Boolean = false,
     val isLiked: Boolean = false
 ) : Serializable {
 
@@ -75,6 +77,7 @@ data class Category(
         fun ownFolderOrder(folder: String): Int =
             OWN_FOLDER_LABELS.keys.indexOf(folder.lowercase()).let { if (it < 0) Int.MAX_VALUE else it }
 
-        fun search(query: String) = Category(query, "🔍", query = query, sorting = "relevance", apiCategories = "110")
+        fun search(query: String) =
+            Category(query, "🔍", query = query, sorting = "relevance", apiCategories = "110", photoSearch = true)
     }
 }

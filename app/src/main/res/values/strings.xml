@@ -46,6 +46,7 @@
     <string name="msg_unliked">Removed from Liked</string>
     <string name="lbl_share_text">Check out this wallpaper: %1$s</string>
     <string name="lbl_powered_by">Wallpapers by Wallora</string>
+    <string name="lbl_images_from_pixabay">Images from Pixabay</string>
     <string name="lbl_developer">Saruj Kanti Das</string>
     <string name="lbl_menu_home">Explore</string>
     <string name="lbl_menu_liked">Liked wallpapers</string>
@@ -59,7 +60,7 @@
     <string name="lbl_theme_dark">Dark</string>
     <string name="lbl_menu_share">Share app</string>
     <string name="lbl_menu_about">About</string>
-    <string name="lbl_about_msg">Wallora brings you thousands of free, high-resolution wallpapers.\n\nWallpapers are provided by the free Wallhaven API (SFW only) with Lorem Picsum as a backup source. All downloads are saved to Pictures/Wallora/Download.</string>
+    <string name="lbl_about_msg">Wallora brings you thousands of free, high-resolution wallpapers.\n\nWallpapers are provided by the free Wallhaven API (SFW only) with Lorem Picsum as a backup source. Search results for real-world things use photos from Pixabay. All downloads are saved to Pictures/Wallora/Download.</string>
     <string name="lbl_version">Version %1$s</string>
     <string name="cd_back">Back</string>
     <string name="cd_menu">Menu</string>
