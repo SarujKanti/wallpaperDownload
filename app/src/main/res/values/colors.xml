@@ -9,6 +9,7 @@
     <color name="surface_variant">#E9E9F2</color>
     <color name="stroke">#E1E1EC</color>
     <color name="accent_purple">#7C4DFF</color>
+    <color name="notification_accent">@color/accent_purple</color>
     <color name="accent_pink">#FF4F9A</color>
     <color name="text_primary">#15151F</color>
     <color name="text_secondary">#5E6180</color>

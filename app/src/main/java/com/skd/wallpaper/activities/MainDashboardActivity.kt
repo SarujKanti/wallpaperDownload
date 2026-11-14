@@ -1,10 +1,12 @@
 package com.skd.wallpaper.activities
 
+import android.Manifest
 import android.app.Dialog
 import android.app.DownloadManager
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.LinearGradient
@@ -29,6 +31,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
@@ -82,6 +85,7 @@ class MainDashboardActivity :
         initToolbar()
         initSearch()
         initTabs()
+        askNotificationPermissionOnce()
         if (CategoryRepository.cached == null) {
             // Folder check still running (slow network): add those tabs when it finishes
             lifecycleScope.launch { updateTabs(CategoryRepository.load().await()) }
@@ -245,6 +249,21 @@ class MainDashboardActivity :
             } else false
         }
         binding.btnSearch.setOnClickListener { submitSearch() }
+    }
+
+    // Android 13+ needs permission for the trending reminder; asked once, never nagged again
+    private val notificationPermission =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) {}
+
+    private fun askNotificationPermissionOnce() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
+            PackageManager.PERMISSION_GRANTED
+        ) return
+        val prefs = getSharedPreferences(PREFS, MODE_PRIVATE)
+        if (prefs.getBoolean(KEY_ASKED_NOTIFICATIONS, false)) return
+        prefs.edit().putBoolean(KEY_ASKED_NOTIFICATIONS, true).apply()
+        notificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
     }
 
     // Set when a search opens the results page; the box is emptied when the user comes back
@@ -535,7 +554,9 @@ class MainDashboardActivity :
     companion object {
         // Like Material's navigation drawer: never wider than this, even on tablets/landscape
         private const val DRAWER_MAX_WIDTH_DP = 360
-        private const val EXTRA_TAB = "selected_tab"
+        const val EXTRA_TAB = "selected_tab"
+        private const val PREFS = "dashboard"
+        private const val KEY_ASKED_NOTIFICATIONS = "asked_notifications"
         private const val HERO_HEIGHT_FRACTION = 0.25f
     }
 }

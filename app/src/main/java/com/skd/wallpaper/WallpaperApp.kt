@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Application
 import android.os.Build
 import android.os.Bundle
+import com.skd.wallpaper.notifications.TrendingNotifier
 import com.skd.wallpaper.utils.DeviceUtils
 import com.skd.wallpaper.utils.ThemeManager
 
@@ -15,6 +16,9 @@ class WallpaperApp : Application() {
         ThemeManager.applySaved(this)
         // Phones: every screen stays in portrait; tablets can rotate (see DeviceUtils)
         registerActivityLifecycleCallbacks(OrientationLock)
+        // "New trending wallpapers" reminder every 14 hours (kept if already scheduled)
+        TrendingNotifier.createChannel(this)
+        TrendingNotifier.schedule(this)
     }
 
     private object OrientationLock : ActivityLifecycleCallbacks {
