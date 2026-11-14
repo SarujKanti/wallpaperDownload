@@ -8,11 +8,13 @@ import androidx.core.content.ContextCompat
 import androidx.core.os.BundleCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.skd.wallpaper.R
 import com.skd.wallpaper.activities.WallpaperPreviewActivity
+import com.skd.wallpaper.adapters.SkeletonAdapter
 import com.skd.wallpaper.adapters.WallpaperAdapter
 import com.skd.wallpaper.data.FavoritesStore
 import com.skd.wallpaper.databinding.FragmentWallpaperGridBinding
@@ -34,6 +36,8 @@ class WallpaperGridFragment : Fragment() {
     private lateinit var category: Category
     private lateinit var viewModel: WallpaperGridViewModel
     private lateinit var adapter: WallpaperAdapter
+    private val skeleton = SkeletonAdapter()
+    private var gridColumns = 2
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,7 +77,9 @@ class WallpaperGridFragment : Fragment() {
         val columns = DeviceUtils.gridColumns(requireContext())
         val layoutManager = GridLayoutManager(requireContext(), columns)
         binding.recyclerView.layoutManager = layoutManager
-        binding.recyclerView.adapter = adapter
+        // Real cards, then shimmering skeleton cards while loading (see renderState)
+        binding.recyclerView.adapter = ConcatAdapter(adapter, skeleton)
+        gridColumns = columns
         binding.recyclerView.setHasFixedSize(true)
 
         binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -118,8 +124,13 @@ class WallpaperGridFragment : Fragment() {
 
     private fun renderState(state: LoadState) = with(binding) {
         val isEmpty = viewModel.items.value.isNullOrEmpty()
-        progressCenter.visibility = if (state == LoadState.LOADING && isEmpty) View.VISIBLE else View.GONE
-        progressMore.visibility = if (state == LoadState.LOADING_MORE) View.VISIBLE else View.GONE
+        // Skeleton instead of spinners: a full screen of placeholder cards on the first load,
+        // one row of them at the end while the next page loads
+        skeleton.count = when {
+            state == LoadState.LOADING && isEmpty -> gridColumns * SKELETON_ROWS
+            state == LoadState.LOADING_MORE -> gridColumns
+            else -> 0
+        }
         if (state != LoadState.REFRESHING) swipeRefresh.isRefreshing = false
 
         when {
@@ -170,6 +181,8 @@ class WallpaperGridFragment : Fragment() {
         private const val ARG_CATEGORY = "category"
         // Start loading the next page this many rows before the end
         private const val PRELOAD_ROWS = 3
+        // Enough placeholder rows to fill the screen on the first load
+        private const val SKELETON_ROWS = 3
 
         fun newInstance(category: Category) = WallpaperGridFragment().apply {
             arguments = Bundle().apply { putSerializable(ARG_CATEGORY, category) }

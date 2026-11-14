@@ -20,11 +20,20 @@
     <color name="ic_launcher_bg">#080834</color>
 
     <!-- Frosted-glass drawer (light). "solid" is used when the phone can't blur. -->
-    <color name="glass_panel">#B3F7F7FC</color>
-    <color name="glass_panel_solid">#F2F7F7FC</color>
-    <color name="glass_group">#99FFFFFF</color>
-    <color name="glass_stroke">#80FFFFFF</color>
-    <color name="glass_separator">#1A000000</color>
+    <color name="glass_panel">#EBF7F7FC</color>
+    <color name="glass_panel_solid">#FCF7F7FC</color>
+    <!-- Set wallpaper sheet: dark glass in both themes (it sits over the photo) -->
+    <color name="sheet_glass">#E6121220</color>
+    <color name="sheet_glass_solid">#FA121220</color>
+    <color name="glass_group">#E6FFFFFF</color>
+    <color name="glass_stroke">#1F000000</color>
+    <color name="glass_separator">#14000000</color>
+    <color name="theme_option_selected">#1F7C4DFF</color>
+
+    <!-- Loading skeleton cards -->
+    <color name="skeleton_base">#E4E4EE</color>
+    <color name="skeleton_line">#D2D2DF</color>
+    <color name="skeleton_shine">#B3FFFFFF</color>
 
     <!-- Category tabs (light) -->
     <color name="tab_surface">#FFFFFF</color>

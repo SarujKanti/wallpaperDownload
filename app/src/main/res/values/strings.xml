@@ -30,6 +30,11 @@
     <string name="lbl_home_screen">Home screen</string>
     <string name="lbl_lock_screen">Lock screen</string>
     <string name="lbl_both_screens">Home &amp; lock screens</string>
+    <string name="lbl_set_subtitle">Choose where to apply this wallpaper</string>
+    <string name="lbl_home_screen_desc">Behind your apps and widgets</string>
+    <string name="lbl_lock_screen_desc">When your phone is locked</string>
+    <string name="lbl_both_screens_desc">Same wallpaper everywhere</string>
+    <string name="lbl_cancel">Cancel</string>
     <string name="msg_setting_wallpaper">Applying wallpaper…</string>
     <string name="msg_wallpaper_set">Wallpaper applied 🎉</string>
     <string name="msg_wallpaper_failed">Couldn\'t set wallpaper</string>
@@ -42,7 +47,6 @@
     <string name="lbl_share_text">Check out this wallpaper: %1$s</string>
     <string name="lbl_powered_by">Wallpapers by Wallora</string>
     <string name="lbl_images_from_pixabay">Images from Pixabay</string>
-    <string name="lbl_developer">Saruj Kanti Das</string>
     <string name="lbl_menu_home">Explore</string>
     <string name="lbl_menu_liked">Liked wallpapers</string>
     <string name="lbl_menu_downloads">Downloads folder</string>
@@ -50,6 +54,10 @@
     <string name="lbl_section_browse">BROWSE</string>
     <string name="lbl_section_more">MORE</string>
     <string name="lbl_choose_theme">Choose theme</string>
+    <string name="lbl_theme_subtitle">Pick how Wallora looks</string>
+    <string name="lbl_theme_system_desc">Follows your phone\'s setting</string>
+    <string name="lbl_theme_light_desc">Bright and clean</string>
+    <string name="lbl_theme_dark_desc">Easy on the eyes at night</string>
     <string name="lbl_theme_system">System default</string>
     <string name="lbl_theme_light">Light</string>
     <string name="lbl_theme_dark">Dark</string>

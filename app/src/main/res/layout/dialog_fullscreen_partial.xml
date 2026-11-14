@@ -70,20 +70,6 @@
                 android:text="@string/lbl_tagline"
                 android:textColor="#E6FFFFFF"
                 android:textSize="12sp" />
-
-            <TextView
-                android:id="@+id/tvDialogContent"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
-                android:background="@drawable/bg_chip_glass"
-                android:paddingStart="12dp"
-                android:paddingTop="6dp"
-                android:paddingEnd="12dp"
-                android:paddingBottom="6dp"
-                android:text="@string/lbl_developer"
-                android:textColor="@color/white"
-                android:textSize="12sp" />
         </LinearLayout>
     </FrameLayout>
 

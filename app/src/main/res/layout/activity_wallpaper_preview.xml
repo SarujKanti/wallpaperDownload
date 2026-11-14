@@ -60,27 +60,7 @@
                 android:textColor="@color/white"
                 android:textSize="12sp"
                 android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tvSource"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:textColor="#CCFFFFFF"
-                android:textSize="12sp" />
         </LinearLayout>
-
-        <ImageView
-            android:id="@+id/btnInfo"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
-            android:background="@drawable/bg_circle_glass"
-            android:contentDescription="@string/lbl_menu_about"
-            android:foreground="?attr/selectableItemBackgroundBorderless"
-            android:padding="11dp"
-            android:src="@drawable/ic_info"
-            app:tint="@color/white" />
     </LinearLayout>
 
     <!-- Bottom glass panel -->
@@ -117,16 +97,6 @@
                 android:textColor="@color/preview_text_secondary"
                 android:textSize="12sp" />
 
-            <TextView
-                android:id="@+id/tvViews"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawablePadding="4dp"
-                android:gravity="center_vertical"
-                android:textColor="@color/preview_text_secondary"
-                android:textSize="12sp"
-                app:drawableStartCompat="@drawable/ic_eye"
-                app:drawableTint="@color/preview_text_secondary" />
         </LinearLayout>
 
         <!-- Color palette from Wallhaven -->

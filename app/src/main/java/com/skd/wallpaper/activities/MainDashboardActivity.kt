@@ -20,6 +20,7 @@ import android.text.style.CharacterStyle
 import android.text.style.UpdateAppearance
 import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager
@@ -47,7 +48,9 @@ import com.skd.wallpaper.BuildConfig
 import com.skd.wallpaper.R
 import com.skd.wallpaper.data.CategoryRepository
 import com.skd.wallpaper.databinding.ActivityMainDashboardBinding
+import com.skd.wallpaper.databinding.DialogChooseThemeBinding
 import com.skd.wallpaper.databinding.DialogFullscreenPartialBinding
+import com.skd.wallpaper.databinding.ItemThemeOptionBinding
 import com.skd.wallpaper.fragments.FeedHost
 import com.skd.wallpaper.fragments.WallpaperGridFragment
 import com.skd.wallpaper.model.Category
@@ -55,7 +58,10 @@ import com.skd.wallpaper.model.Wallpaper
 import com.skd.wallpaper.utils.AppTheme
 import com.skd.wallpaper.utils.BaseActivity
 import com.skd.wallpaper.utils.ThemeManager
+import com.skd.wallpaper.utils.Glass
 import com.skd.wallpaper.utils.emailReport
+import com.skd.wallpaper.utils.showGlass
+import com.skd.wallpaper.utils.styleAsCenteredGlass
 import kotlinx.coroutines.launch
 
 class MainDashboardActivity :
@@ -241,6 +247,17 @@ class MainDashboardActivity :
         binding.btnSearch.setOnClickListener { submitSearch() }
     }
 
+    // Set when a search opens the results page; the box is emptied when the user comes back
+    private var clearSearchOnReturn = false
+
+    override fun onResume() {
+        super.onResume()
+        if (clearSearchOnReturn) {
+            clearSearchOnReturn = false
+            binding.etSearch.text?.clear()
+        }
+    }
+
     private fun submitSearch() {
         val query = binding.etSearch.text?.toString()?.trim().orEmpty()
         if (query.isEmpty()) {
@@ -250,6 +267,7 @@ class MainDashboardActivity :
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(binding.etSearch.windowToken, 0)
         binding.etSearch.clearFocus()
+        clearSearchOnReturn = true
         SearchResultsActivity.start(this, query)
     }
 
@@ -361,7 +379,7 @@ class MainDashboardActivity :
                 .setTitle(R.string.lbl_git_repo)
                 .setMessage(getString(R.string.lbl_about_msg, getString(R.string.contact_email)))
                 .setPositiveButton(R.string.lbl_close, null)
-                .show()
+                .showGlass(this)
         }
         dialog.show()
     }
@@ -414,14 +432,9 @@ class MainDashboardActivity :
             setStroke((1 * density).toInt(), ContextCompat.getColor(this@MainDashboardActivity, R.color.glass_stroke))
         }
         window.setBackgroundDrawable(panel)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && canBlur) {
-            window.setBackgroundBlurRadius((40 * density).toInt())
-            window.addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND)
-            window.attributes = window.attributes.apply {
-                blurBehindRadius = (12 * density).toInt()
-                dimAmount = 0.25f
-            }
-        }
+        // Same glass as every dialog: strong blur under the drawer, soft blur + dim on the rest
+        if (canBlur) Glass.blurBehind(window, this, screenRadiusDp = 22)
+        window.setDimAmount(0.35f)
     }
 
     /** Keeps the drawer's header text below the status bar and its footer above the nav bar. */
@@ -438,20 +451,40 @@ class MainDashboardActivity :
         drawer.headerContent.updatePadding(left = drawer.headerContent.paddingLeft + bars.left)
     }
 
+    /** Glass "Choose theme" card: System default / Light / Dark, current one ticked. */
     private fun chooseTheme() {
-        val themes = AppTheme.values()
-        val selected = themes.indexOf(ThemeManager.current(this))
-        MaterialAlertDialogBuilder(this)
-            .setTitle(R.string.lbl_choose_theme)
-            .setSingleChoiceItems(themes.map { getString(it.label) }.toTypedArray(), selected) { dialog, which ->
+        val dialog = Dialog(this, R.style.GlassDialog)
+        val view = DialogChooseThemeBinding.inflate(layoutInflater)
+        dialog.setContentView(view.root)
+
+        val current = ThemeManager.current(this)
+        fun bind(option: ItemThemeOptionBinding, theme: AppTheme, iconRes: Int, tileRes: Int, descRes: Int) {
+            option.optionIcon.setImageResource(iconRes)
+            option.optionIcon.setBackgroundResource(tileRes)
+            option.optionTitle.setText(theme.label)
+            option.optionDesc.setText(descRes)
+            val selected = theme == current
+            option.optionRoot.isSelected = selected
+            option.optionCheck.visibility = if (selected) View.VISIBLE else View.INVISIBLE
+            option.optionRoot.setOnClickListener {
                 dialog.dismiss()
-                if (themes[which] == ThemeManager.current(this)) return@setSingleChoiceItems
-                ThemeManager.set(this, themes[which])
+                if (theme == ThemeManager.current(this)) return@setOnClickListener
+                ThemeManager.set(this, theme)
                 // This screen handles uiMode changes itself (see onConfigurationChanged), so
                 // AppCompat won't restart it: reopen it with the new theme
                 reopenForNewTheme()
             }
-            .show()
+        }
+        bind(view.optionSystem, AppTheme.SYSTEM, R.drawable.ic_phone, R.drawable.bg_theme_icon_system,
+            R.string.lbl_theme_system_desc)
+        bind(view.optionLight, AppTheme.LIGHT, R.drawable.ic_sun, R.drawable.bg_theme_icon_light,
+            R.string.lbl_theme_light_desc)
+        bind(view.optionDark, AppTheme.DARK, R.drawable.ic_moon, R.drawable.bg_theme_icon_dark,
+            R.string.lbl_theme_dark_desc)
+        view.btnCancel.setOnClickListener { dialog.dismiss() }
+
+        dialog.styleAsCenteredGlass(this)
+        dialog.show()
     }
 
     private fun openDownloads() {

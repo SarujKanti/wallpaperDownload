@@ -58,7 +58,7 @@ class SplashActivity : AppCompatActivity() {
             }
             .start()
 
-        listOf<View>(campus, txtAppName, txtTagline, progress).forEachIndexed { index, view ->
+        listOf<View>(campus, txtAppName, txtTagline).forEachIndexed { index, view ->
             view.alpha = 0f
             view.translationY = 40f
             view.animate()
