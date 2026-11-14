@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Theme option card; the selected state gets a purple tint and outline -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_selected="true">
+        <ripple android:color="#337C4DFF">
+            <item>
+                <shape>
+                    <corners android:radius="18dp" />
+                    <solid android:color="@color/theme_option_selected" />
+                    <stroke
+                        android:width="1.5dp"
+                        android:color="@color/accent_purple" />
+                </shape>
+            </item>
+        </ripple>
+    </item>
+    <item>
+        <ripple android:color="#297C4DFF">
+            <item>
+                <shape>
+                    <corners android:radius="18dp" />
+                    <solid android:color="@color/glass_group" />
+                    <stroke
+                        android:width="1dp"
+                        android:color="@color/glass_stroke" />
+                </shape>
+            </item>
+        </ripple>
+    </item>
+</selector>

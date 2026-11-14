@@ -54,6 +54,10 @@
     <string name="lbl_section_browse">BROWSE</string>
     <string name="lbl_section_more">MORE</string>
     <string name="lbl_choose_theme">Choose theme</string>
+    <string name="lbl_theme_subtitle">Pick how Wallora looks</string>
+    <string name="lbl_theme_system_desc">Follows your phone\'s setting</string>
+    <string name="lbl_theme_light_desc">Bright and clean</string>
+    <string name="lbl_theme_dark_desc">Easy on the eyes at night</string>
     <string name="lbl_theme_system">System default</string>
     <string name="lbl_theme_light">Light</string>
     <string name="lbl_theme_dark">Dark</string>

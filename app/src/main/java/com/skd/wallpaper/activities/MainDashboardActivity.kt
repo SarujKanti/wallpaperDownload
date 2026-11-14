@@ -20,6 +20,7 @@ import android.text.style.CharacterStyle
 import android.text.style.UpdateAppearance
 import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager
@@ -47,7 +48,9 @@ import com.skd.wallpaper.BuildConfig
 import com.skd.wallpaper.R
 import com.skd.wallpaper.data.CategoryRepository
 import com.skd.wallpaper.databinding.ActivityMainDashboardBinding
+import com.skd.wallpaper.databinding.DialogChooseThemeBinding
 import com.skd.wallpaper.databinding.DialogFullscreenPartialBinding
+import com.skd.wallpaper.databinding.ItemThemeOptionBinding
 import com.skd.wallpaper.fragments.FeedHost
 import com.skd.wallpaper.fragments.WallpaperGridFragment
 import com.skd.wallpaper.model.Category
@@ -436,20 +439,40 @@ class MainDashboardActivity :
         drawer.headerContent.updatePadding(left = drawer.headerContent.paddingLeft + bars.left)
     }
 
+    /** Glass "Choose theme" card: System default / Light / Dark, current one ticked. */
     private fun chooseTheme() {
-        val themes = AppTheme.values()
-        val selected = themes.indexOf(ThemeManager.current(this))
-        MaterialAlertDialogBuilder(this)
-            .setTitle(R.string.lbl_choose_theme)
-            .setSingleChoiceItems(themes.map { getString(it.label) }.toTypedArray(), selected) { dialog, which ->
+        val dialog = Dialog(this, R.style.GlassDialog)
+        val view = DialogChooseThemeBinding.inflate(layoutInflater)
+        dialog.setContentView(view.root)
+
+        val current = ThemeManager.current(this)
+        fun bind(option: ItemThemeOptionBinding, theme: AppTheme, iconRes: Int, tileRes: Int, descRes: Int) {
+            option.optionIcon.setImageResource(iconRes)
+            option.optionIcon.setBackgroundResource(tileRes)
+            option.optionTitle.setText(theme.label)
+            option.optionDesc.setText(descRes)
+            val selected = theme == current
+            option.optionRoot.isSelected = selected
+            option.optionCheck.visibility = if (selected) View.VISIBLE else View.INVISIBLE
+            option.optionRoot.setOnClickListener {
                 dialog.dismiss()
-                if (themes[which] == ThemeManager.current(this)) return@setSingleChoiceItems
-                ThemeManager.set(this, themes[which])
+                if (theme == ThemeManager.current(this)) return@setOnClickListener
+                ThemeManager.set(this, theme)
                 // This screen handles uiMode changes itself (see onConfigurationChanged), so
                 // AppCompat won't restart it: reopen it with the new theme
                 reopenForNewTheme()
             }
-            .show()
+        }
+        bind(view.optionSystem, AppTheme.SYSTEM, R.drawable.ic_phone, R.drawable.bg_theme_icon_system,
+            R.string.lbl_theme_system_desc)
+        bind(view.optionLight, AppTheme.LIGHT, R.drawable.ic_sun, R.drawable.bg_theme_icon_light,
+            R.string.lbl_theme_light_desc)
+        bind(view.optionDark, AppTheme.DARK, R.drawable.ic_moon, R.drawable.bg_theme_icon_dark,
+            R.string.lbl_theme_dark_desc)
+        view.btnCancel.setOnClickListener { dialog.dismiss() }
+
+        dialog.styleAsCenteredGlass(this)
+        dialog.show()
     }
 
     private fun openDownloads() {

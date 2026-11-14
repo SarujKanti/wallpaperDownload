@@ -188,6 +188,14 @@
         <item name="android:windowAnimationStyle">@style/SetWallpaperSheetAnimation</item>
     </style>
 
+    <!-- Centered glass dialog that follows the app theme (light/dark), e.g. Choose theme -->
+    <style name="GlassDialog" parent="Theme.Material3.DayNight.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:windowAnimationStyle">@style/SetWallpaperSheetAnimation</item>
+    </style>
+
     <style name="SetWallpaperSheetAnimation">
         <item name="android:windowEnterAnimation">@anim/dialog_pop_in</item>
         <item name="android:windowExitAnimation">@anim/dialog_pop_out</item>
