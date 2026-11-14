@@ -60,6 +60,7 @@ import com.skd.wallpaper.fragments.WallpaperGridFragment
 import com.skd.wallpaper.model.Category
 import com.skd.wallpaper.model.Wallpaper
 import com.skd.wallpaper.utils.AppTheme
+import com.skd.wallpaper.utils.AppUpdater
 import com.skd.wallpaper.utils.BaseActivity
 import com.skd.wallpaper.utils.ThemeManager
 import com.skd.wallpaper.utils.Glass
@@ -75,6 +76,10 @@ class MainDashboardActivity :
     private lateinit var tabsAdapter: FragmentStateAdapter
 
     // Header photo per tab (picked from that tab's wallpapers) and the one currently shown
+    // "New version available" snackbar; forces the Play update screen after 3 hours
+    @Suppress("unused") // works through its lifecycle observer
+    private val appUpdater = AppUpdater(this) { binding.root }
+
     private val heroUrls = mutableMapOf<Category, String>()
     private var heroUrl: String? = null
 

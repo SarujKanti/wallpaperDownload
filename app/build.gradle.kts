@@ -23,8 +23,8 @@ android {
         applicationId = "com.skd.wallpaper"
         minSdk = 24
         targetSdk = 36
-        versionCode = 5
-        versionName = "1.2.0"
+        versionCode = 6
+        versionName = "1.2.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -92,6 +92,9 @@ dependencies {
     // Push notifications sent from the Firebase console to every install
     implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
     implementation("com.google.firebase:firebase-messaging")
+
+    // "New version available" snackbar and Play Store in-app updates
+    implementation("com.google.android.play:app-update-ktx:2.1.0")
 }
 // Firebase reads app/google-services.json (downloaded from the Firebase console, git-ignored).
 // Without it the app still builds and runs; push notifications are simply off.

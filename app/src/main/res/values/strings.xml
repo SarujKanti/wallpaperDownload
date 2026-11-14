@@ -92,6 +92,13 @@
     <string name="notif_channel_trending">Trending wallpapers</string>
     <string name="notif_channel_trending_desc">A reminder when new trending wallpapers are in</string>
 
+    <!-- In-app updates (Play Store) -->
+    <string name="msg_update_available">A new version of Wallvyn is available</string>
+    <string name="lbl_update">Update</string>
+    <string name="msg_update_downloaded">Update downloaded. Restart to finish</string>
+    <string name="lbl_restart">Restart</string>
+    <string name="msg_app_updated">Wallvyn updated to v%1$s 🎉</string>
+
     <!-- Contact / takedown -->
     <string name="contact_email" translatable="false">14skd12@gmail.com</string>
     <string name="lbl_menu_report">Report or request removal</string>
