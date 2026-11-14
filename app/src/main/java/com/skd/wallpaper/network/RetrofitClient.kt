@@ -22,7 +22,7 @@ object RetrofitClient {
     private const val PIXABAY_URL = "https://pixabay.com/"
 
     /** Identifies the app honestly to every image server (API etiquette; lets them contact us). */
-    val USER_AGENT = "Wallora-Android/${BuildConfig.VERSION_NAME} (${BuildConfig.APPLICATION_ID})"
+    val USER_AGENT = "Wallvyn-Android/${BuildConfig.VERSION_NAME} (${BuildConfig.APPLICATION_ID})"
 
     private val client: OkHttpClient by lazy {
         OkHttpClient.Builder()

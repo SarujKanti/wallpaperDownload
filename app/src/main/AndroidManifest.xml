@@ -47,6 +47,7 @@
 
         <activity
             android:name=".activities.SplashActivity"
+            android:label="@string/app_launcher_name"
             android:exported="true"
             android:theme="@style/Theme.Wallpaper.Splash">
             <intent-filter>

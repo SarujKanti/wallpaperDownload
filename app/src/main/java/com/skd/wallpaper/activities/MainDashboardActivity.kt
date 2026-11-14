@@ -125,7 +125,7 @@ class MainDashboardActivity :
             setDarkStatusIcons(progress >= 0.9f && !isNightMode())
         }
 
-        // "Wallora" in a white → pink → purple gradient
+        // "Wallvyn" in a white → pink → purple gradient
         binding.tvTitle.post {
             binding.tvTitle.paint.shader = LinearGradient(
                 0f, 0f, binding.tvTitle.width.toFloat(), 0f,
@@ -367,15 +367,9 @@ class MainDashboardActivity :
         padDrawerForSystemBars(drawer)
 
         drawer.tvVersion.text = getString(R.string.lbl_version, BuildConfig.VERSION_NAME)
-        drawer.chipVersion.text = getString(R.string.lbl_version_chip, BuildConfig.VERSION_NAME)
 
-        // Liked count: header chip (tap to open Liked) and a badge on the Liked row
+        // Number of liked wallpapers, as a badge on the Liked row
         val likedCount = FavoritesStore.getAll(this).size
-        drawer.chipLiked.text = getString(R.string.lbl_liked_chip, likedCount)
-        drawer.chipLiked.setOnClickListener {
-            openLiked()
-            dialog.dismiss()
-        }
         drawer.tvLikedCount.text = likedCount.toString()
         drawer.tvLikedCount.visibility = if (likedCount > 0) View.VISIBLE else View.GONE
 

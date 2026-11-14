@@ -1,8 +1,11 @@
 <resources>
-    <string name="app_name">Wallora ✨</string>
+    <!-- Full name: app settings, recent apps, share sheet -->
+    <string name="app_name">Wallvyn – HD &amp; 4K Wallpapers</string>
+    <!-- Short name under the home-screen icon (the full name would be cut off) -->
+    <string name="app_launcher_name">Wallvyn</string>
     <string name="lbl_search">Search</string>
     <string name="lbl_welcome">Welcome to</string>
-    <string name="lbl_git_repo">Wallora</string>
+    <string name="lbl_git_repo">Wallvyn</string>
     <string name="lbl_present">Presented by Saruj</string>
     <string name="lbl_close">Close</string>
 
@@ -39,13 +42,13 @@
     <string name="msg_wallpaper_set">Wallpaper applied 🎉</string>
     <string name="msg_wallpaper_failed">Couldn\'t set wallpaper</string>
     <string name="msg_download_started">Downloading…</string>
-    <string name="msg_download_done">Saved to Pictures/Wallora/Download</string>
+    <string name="msg_download_done">Saved to Pictures/Wallvyn/Download</string>
     <string name="msg_download_failed">Download failed</string>
     <string name="msg_permission_needed">Storage permission is needed to save wallpapers</string>
     <string name="msg_liked">Added to Liked ❤️</string>
     <string name="msg_unliked">Removed from Liked</string>
     <string name="lbl_share_text">Check out this wallpaper: %1$s</string>
-    <string name="lbl_powered_by">Wallpapers by Wallora</string>
+    <string name="lbl_powered_by">Wallpapers by Wallvyn</string>
     <string name="lbl_images_from_pixabay">Images from Pixabay</string>
     <string name="lbl_menu_home">Explore</string>
     <string name="lbl_menu_liked">Liked wallpapers</string>
@@ -54,10 +57,8 @@
     <string name="lbl_section_browse">BROWSE</string>
     <string name="lbl_section_settings">SETTINGS</string>
     <string name="lbl_section_support">SUPPORT</string>
-    <string name="lbl_liked_chip">%1$d liked</string>
-    <string name="lbl_version_chip">v%1$s</string>
     <string name="lbl_choose_theme">Choose theme</string>
-    <string name="lbl_theme_subtitle">Pick how Wallora looks</string>
+    <string name="lbl_theme_subtitle">Pick how Wallvyn looks</string>
     <string name="lbl_theme_system_desc">Follows your phone\'s setting</string>
     <string name="lbl_theme_light_desc">Bright and clean</string>
     <string name="lbl_theme_dark_desc">Easy on the eyes at night</string>
@@ -73,21 +74,21 @@
     <string name="about_sources_title">Where wallpapers come from</string>
     <string name="about_source_wallhaven"><b>Wallhaven</b>: safe-for-work wallpapers for the category tabs</string>
     <string name="about_source_pixabay"><b>Pixabay</b>: photos for search results</string>
-    <string name="about_source_collection"><b>Wallora collection</b>: wallpapers we add ourselves, shown first in their tabs</string>
+    <string name="about_source_collection"><b>Wallvyn collection</b>: wallpapers we add ourselves, shown first in their tabs</string>
     <string name="about_source_picsum"><b>Lorem Picsum</b>: backup photos when Wallhaven can\'t be reached</string>
     <string name="about_privacy_title">Your privacy</string>
     <string name="about_privacy_account">No account or sign-in needed</string>
     <string name="about_privacy_tracking">No ads, analytics or tracking</string>
     <string name="about_privacy_likes">Liked wallpapers and your theme stay on this device</string>
     <string name="about_privacy_network">Images load directly from the sources above, which see your IP address like any website</string>
-    <string name="about_storage">Downloads are saved to Pictures/Wallora/Download</string>
+    <string name="about_storage">Downloads are saved to Pictures/Wallvyn/Download</string>
     <string name="about_copyright_title">Copyright</string>
-    <string name="about_copyright_body">All images belong to their creators. Wallora does not claim ownership of any image. If you own an image and want it credited or removed, contact us and we will respond.</string>
+    <string name="about_copyright_body">All images belong to their creators. Wallvyn does not claim ownership of any image. If you own an image and want it credited or removed, contact us and we will respond.</string>
     <string name="about_contact">Request removal or contact</string>
 
     <!-- Trending reminder notification -->
     <string name="notif_trending_title">New trending wallpapers arrived ✨</string>
-    <string name="notif_trending_text">Tap to see what\'s trending on Wallora today</string>
+    <string name="notif_trending_text">Tap to see what\'s trending on Wallvyn today</string>
     <string name="notif_channel_trending">Trending wallpapers</string>
     <string name="notif_channel_trending_desc">A reminder when new trending wallpapers are in</string>
 
@@ -95,7 +96,7 @@
     <string name="contact_email" translatable="false">14skd12@gmail.com</string>
     <string name="lbl_menu_report">Report or request removal</string>
     <string name="lbl_report_image">Report image</string>
-    <string name="lbl_report_subject">Wallora: report / removal request</string>
+    <string name="lbl_report_subject">Wallvyn: report / removal request</string>
     <string name="lbl_report_body">Please describe the issue (e.g. you own this image and want it removed or credited).
 
 </string>
