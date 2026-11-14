@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.skd.wallpaper.data.CategoryRepository
 import com.skd.wallpaper.databinding.ActivitySplashBinding
+import com.skd.wallpaper.notifications.PushService
 import com.skd.wallpaper.utils.applySystemBars
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -37,7 +38,9 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun openDashboard() {
-        startActivity(Intent(this, MainDashboardActivity::class.java))
+        // A push notification tapped while the app was closed may name a tab to open
+        val tab = intent.getStringExtra(PushService.KEY_TAB)
+        startActivity(Intent(this, MainDashboardActivity::class.java).putExtra(MainDashboardActivity.EXTRA_TAB, tab))
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
         finish()
     }
