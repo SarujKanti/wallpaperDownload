@@ -22,6 +22,9 @@
     <!-- Frosted-glass drawer (light). "solid" is used when the phone can't blur. -->
     <color name="glass_panel">#B3F7F7FC</color>
     <color name="glass_panel_solid">#F2F7F7FC</color>
+    <!-- Set wallpaper sheet: dark glass in both themes (it sits over the photo) -->
+    <color name="sheet_glass">#E6121220</color>
+    <color name="sheet_glass_solid">#FA121220</color>
     <color name="glass_group">#99FFFFFF</color>
     <color name="glass_stroke">#80FFFFFF</color>
     <color name="glass_separator">#1A000000</color>

@@ -1,6 +1,7 @@
 package com.skd.wallpaper.activities
 
 import android.Manifest
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -23,12 +24,13 @@ import androidx.core.view.updatePadding
 import androidx.core.widget.TextViewCompat
 import androidx.lifecycle.lifecycleScope
 import coil.load
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.skd.wallpaper.R
 import com.skd.wallpaper.data.FavoritesStore
 import com.skd.wallpaper.databinding.ActivityWallpaperPreviewBinding
+import com.skd.wallpaper.databinding.DialogSetWallpaperBinding
 import com.skd.wallpaper.model.Wallpaper
 import com.skd.wallpaper.utils.DownloadStatus
+import com.skd.wallpaper.utils.styleAsCenteredGlass
 import com.skd.wallpaper.utils.ImageDimensions
 import com.skd.wallpaper.utils.WallpaperDownloader
 import com.skd.wallpaper.utils.WallpaperSetter
@@ -233,17 +235,24 @@ class WallpaperPreviewActivity : AppCompatActivity() {
     // endregion
 
     // region Set wallpaper
+    /** Centered frosted-glass dialog: Home screen / Lock screen / Both. */
     private fun chooseWallpaperTarget() {
-        val labels = arrayOf(
-            getString(R.string.lbl_home_screen),
-            getString(R.string.lbl_lock_screen),
-            getString(R.string.lbl_both_screens)
-        )
-        val targets = intArrayOf(WallpaperSetter.TARGET_HOME, WallpaperSetter.TARGET_LOCK, WallpaperSetter.TARGET_BOTH)
-        MaterialAlertDialogBuilder(this)
-            .setTitle(R.string.lbl_set_as)
-            .setItems(labels) { _, which -> applyWallpaper(targets[which]) }
-            .show()
+        val dialog = Dialog(this, R.style.SetWallpaperSheet)
+        val sheet = DialogSetWallpaperBinding.inflate(layoutInflater)
+        dialog.setContentView(sheet.root)
+
+        fun pick(target: Int) {
+            dialog.dismiss()
+            applyWallpaper(target)
+        }
+        sheet.optionHome.setOnClickListener { pick(WallpaperSetter.TARGET_HOME) }
+        sheet.optionLock.setOnClickListener { pick(WallpaperSetter.TARGET_LOCK) }
+        sheet.optionBoth.setOnClickListener { pick(WallpaperSetter.TARGET_BOTH) }
+        sheet.btnCancel.setOnClickListener { dialog.dismiss() }
+
+        // Dark glass in both themes: it sits over the photo
+        dialog.styleAsCenteredGlass(this, R.color.sheet_glass, R.color.sheet_glass_solid)
+        dialog.show()
     }
 
     private fun applyWallpaper(target: Int) {

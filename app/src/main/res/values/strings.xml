@@ -30,6 +30,11 @@
     <string name="lbl_home_screen">Home screen</string>
     <string name="lbl_lock_screen">Lock screen</string>
     <string name="lbl_both_screens">Home &amp; lock screens</string>
+    <string name="lbl_set_subtitle">Choose where to apply this wallpaper</string>
+    <string name="lbl_home_screen_desc">Behind your apps and widgets</string>
+    <string name="lbl_lock_screen_desc">When your phone is locked</string>
+    <string name="lbl_both_screens_desc">Same wallpaper everywhere</string>
+    <string name="lbl_cancel">Cancel</string>
     <string name="msg_setting_wallpaper">Applying wallpaper…</string>
     <string name="msg_wallpaper_set">Wallpaper applied 🎉</string>
     <string name="msg_wallpaper_failed">Couldn\'t set wallpaper</string>
