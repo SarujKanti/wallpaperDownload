@@ -18,6 +18,9 @@
         <item name="fontFamily">@font/inter_500</item>
         <item name="android:fontFamily">@font/inter_500</item>
         <item name="materialAlertDialogTheme">@style/ThemeOverlay.Wallpaper.Dialog</item>
+        <!-- Card ⋮ menu (android.widget.PopupMenu) as a frosted glass panel -->
+        <item name="android:popupMenuStyle">@style/Widget.Wallora.PopupMenu</item>
+        <item name="popupMenuStyle">@style/Widget.Wallora.PopupMenu</item>
 
         <!-- 12sp body text for widgets whose text size isn't set in our layouts: dialogs and
              their lists, popup menus, snackbars, buttons, input fields. sp scales with the
@@ -234,5 +237,10 @@
         <item name="android:layout_marginTop">2dp</item>
         <item name="android:textColor">@color/preview_text_secondary</item>
         <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="Widget.Wallora.PopupMenu" parent="Widget.Material3.PopupMenu">
+        <item name="android:popupBackground">@drawable/bg_glass_popup</item>
+        <item name="android:popupElevation">12dp</item>
     </style>
 </resources>

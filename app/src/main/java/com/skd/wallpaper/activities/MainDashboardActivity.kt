@@ -55,7 +55,10 @@ import com.skd.wallpaper.model.Wallpaper
 import com.skd.wallpaper.utils.AppTheme
 import com.skd.wallpaper.utils.BaseActivity
 import com.skd.wallpaper.utils.ThemeManager
+import com.skd.wallpaper.utils.Glass
 import com.skd.wallpaper.utils.emailReport
+import com.skd.wallpaper.utils.showGlass
+import com.skd.wallpaper.utils.styleAsCenteredGlass
 import kotlinx.coroutines.launch
 
 class MainDashboardActivity :
@@ -361,7 +364,7 @@ class MainDashboardActivity :
                 .setTitle(R.string.lbl_git_repo)
                 .setMessage(getString(R.string.lbl_about_msg, getString(R.string.contact_email)))
                 .setPositiveButton(R.string.lbl_close, null)
-                .show()
+                .showGlass(this)
         }
         dialog.show()
     }
