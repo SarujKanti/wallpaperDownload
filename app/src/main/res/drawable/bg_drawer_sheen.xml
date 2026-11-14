@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Subtle light sheen across the drawer header gradient -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <corners android:topRightRadius="28dp" />
+    <gradient
+        android:angle="315"
+        android:centerColor="#00FFFFFF"
+        android:endColor="#00FFFFFF"
+        android:startColor="#29FFFFFF" />
+</shape>

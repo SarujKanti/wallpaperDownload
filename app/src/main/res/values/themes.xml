@@ -128,9 +128,9 @@
     <style name="DrawerRow">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:minHeight">58dp</item>
-        <item name="android:paddingTop">8dp</item>
-        <item name="android:paddingBottom">8dp</item>
+        <item name="android:minHeight">54dp</item>
+        <item name="android:paddingTop">6dp</item>
+        <item name="android:paddingBottom">6dp</item>
         <item name="android:layout_marginTop">2dp</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:orientation">horizontal</item>
@@ -142,9 +142,9 @@
     </style>
 
     <style name="DrawerRowIcon">
-        <item name="android:layout_width">40dp</item>
-        <item name="android:layout_height">40dp</item>
-        <item name="android:padding">9dp</item>
+        <item name="android:layout_width">36dp</item>
+        <item name="android:layout_height">36dp</item>
+        <item name="android:padding">8dp</item>
         <item name="android:background">@drawable/bg_menu_icon</item>
         <item name="android:importantForAccessibility">no</item>
     </style>
@@ -172,7 +172,7 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:paddingStart">12dp</item>
-        <item name="android:paddingTop">18dp</item>
+        <item name="android:paddingTop">20dp</item>
         <item name="android:paddingBottom">6dp</item>
         <item name="android:letterSpacing">0.18</item>
         <item name="android:textColor">@color/text_secondary</item>
@@ -181,6 +181,86 @@
     </style>
 
     <!-- Set wallpaper glass dialog (always dark: it sits over the wallpaper preview) -->
+    <!-- Rounded glass card holding a group of drawer rows -->
+    <style name="DrawerGroup">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/bg_glass_group</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:padding">4dp</item>
+    </style>
+
+    <!-- Hairline between rows, indented to start under the row titles -->
+    <style name="DrawerDivider">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">0.6dp</item>
+        <item name="android:layout_marginStart">60dp</item>
+        <item name="android:background">@color/glass_separator</item>
+    </style>
+
+    <style name="DrawerHeaderChip">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/bg_header_chip</item>
+        <item name="android:drawablePadding">6dp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:paddingStart">10dp</item>
+        <item name="android:paddingTop">6dp</item>
+        <item name="android:paddingEnd">12dp</item>
+        <item name="android:paddingBottom">6dp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">12sp</item>
+        <item name="drawableTint">@color/white</item>
+    </style>
+
+    <!-- Small gradient count pill, e.g. liked wallpapers -->
+    <style name="DrawerCountBadge">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginEnd">6dp</item>
+        <item name="android:background">@drawable/bg_count_badge</item>
+        <item name="android:gravity">center</item>
+        <item name="android:minWidth">22dp</item>
+        <item name="android:paddingStart">7dp</item>
+        <item name="android:paddingTop">2dp</item>
+        <item name="android:paddingEnd">7dp</item>
+        <item name="android:paddingBottom">2dp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:visibility">gone</item>
+    </style>
+
+    <!-- About dialog sections -->
+    <style name="AboutCard">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">10dp</item>
+        <item name="android:background">@drawable/bg_glass_group</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:padding">14dp</item>
+    </style>
+
+    <style name="AboutCardTitle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="AboutBullet">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:drawablePadding">10dp</item>
+        <item name="android:lineSpacingMultiplier">1.15</item>
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:textSize">12sp</item>
+        <item name="drawableStartCompat">@drawable/bg_about_dot</item>
+    </style>
+
     <style name="SetWallpaperSheet" parent="Theme.Material3.Dark.Dialog">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowNoTitle">true</item>

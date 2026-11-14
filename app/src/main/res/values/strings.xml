@@ -52,7 +52,10 @@
     <string name="lbl_menu_downloads">Downloads folder</string>
     <string name="lbl_menu_theme">Theme</string>
     <string name="lbl_section_browse">BROWSE</string>
-    <string name="lbl_section_more">MORE</string>
+    <string name="lbl_section_settings">SETTINGS</string>
+    <string name="lbl_section_support">SUPPORT</string>
+    <string name="lbl_liked_chip">%1$d liked</string>
+    <string name="lbl_version_chip">v%1$s</string>
     <string name="lbl_choose_theme">Choose theme</string>
     <string name="lbl_theme_subtitle">Pick how Wallora looks</string>
     <string name="lbl_theme_system_desc">Follows your phone\'s setting</string>
@@ -63,14 +66,24 @@
     <string name="lbl_theme_dark">Dark</string>
     <string name="lbl_menu_share">Share app</string>
     <string name="lbl_menu_about">About</string>
-    <string name="lbl_about_msg">Wallora collects free wallpapers from public sources: Wallhaven (safe-for-work only), Lorem Picsum (Unsplash photos), Pixabay (search results) and the Wallora collection.
-
-All images remain the property of their original creators and owners. Wallora does not claim ownership of any image.
-
-If you own an image and want it credited or removed, use "Report or request removal" in the menu, or email %1$s. We respond to every request.
-
-Downloads are saved to Pictures/Wallora/Download.</string>
     <string name="lbl_version">Version %1$s</string>
+
+    <!-- About dialog. Keep these accurate to what the app really does. -->
+    <string name="about_version">Version %1$s (build %2$d)</string>
+    <string name="about_sources_title">Where wallpapers come from</string>
+    <string name="about_source_wallhaven"><b>Wallhaven</b>: safe-for-work wallpapers for the category tabs</string>
+    <string name="about_source_pixabay"><b>Pixabay</b>: photos for search results</string>
+    <string name="about_source_collection"><b>Wallora collection</b>: wallpapers we add ourselves, shown first in their tabs</string>
+    <string name="about_source_picsum"><b>Lorem Picsum</b>: backup photos when Wallhaven can\'t be reached</string>
+    <string name="about_privacy_title">Your privacy</string>
+    <string name="about_privacy_account">No account or sign-in needed</string>
+    <string name="about_privacy_tracking">No ads, analytics or tracking</string>
+    <string name="about_privacy_likes">Liked wallpapers and your theme stay on this device</string>
+    <string name="about_privacy_network">Images load directly from the sources above, which see your IP address like any website</string>
+    <string name="about_storage">Downloads are saved to Pictures/Wallora/Download</string>
+    <string name="about_copyright_title">Copyright</string>
+    <string name="about_copyright_body">All images belong to their creators. Wallora does not claim ownership of any image. If you own an image and want it credited or removed, contact us and we will respond.</string>
+    <string name="about_contact">Request removal or contact</string>
 
     <!-- Contact / takedown -->
     <string name="contact_email" translatable="false">14skd12@gmail.com</string>
