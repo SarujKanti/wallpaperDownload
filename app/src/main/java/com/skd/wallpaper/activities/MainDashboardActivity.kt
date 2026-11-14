@@ -247,6 +247,17 @@ class MainDashboardActivity :
         binding.btnSearch.setOnClickListener { submitSearch() }
     }
 
+    // Set when a search opens the results page; the box is emptied when the user comes back
+    private var clearSearchOnReturn = false
+
+    override fun onResume() {
+        super.onResume()
+        if (clearSearchOnReturn) {
+            clearSearchOnReturn = false
+            binding.etSearch.text?.clear()
+        }
+    }
+
     private fun submitSearch() {
         val query = binding.etSearch.text?.toString()?.trim().orEmpty()
         if (query.isEmpty()) {
@@ -256,6 +267,7 @@ class MainDashboardActivity :
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(binding.etSearch.windowToken, 0)
         binding.etSearch.clearFocus()
+        clearSearchOnReturn = true
         SearchResultsActivity.start(this, query)
     }
 
