@@ -32,9 +32,7 @@ import com.skd.wallpaper.utils.DownloadStatus
 import com.skd.wallpaper.utils.ImageDimensions
 import com.skd.wallpaper.utils.WallpaperDownloader
 import com.skd.wallpaper.utils.WallpaperSetter
-import com.skd.wallpaper.utils.formatCount
 import com.skd.wallpaper.utils.formatFileSize
-import com.skd.wallpaper.utils.emailReport
 import com.skd.wallpaper.utils.shareWallpaper
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -115,14 +113,9 @@ class WallpaperPreviewActivity : AppCompatActivity() {
 
     private fun bindInfo() = with(binding) {
         tvTitle.text = wallpaper.category?.replaceFirstChar { it.uppercase() } ?: getString(R.string.cd_wallpaper)
-        tvSource.text = listOfNotNull(wallpaper.author, "via ${wallpaper.source}").joinToString(" · ")
         // Own Supabase images get their size once the full image has loaded (see loadImage)
         tvResolution.text = ImageDimensions.label(wallpaper).orEmpty()
         tvSize.text = formatFileSize(wallpaper.fileSize)
-
-        tvViews.visibility = if (wallpaper.views > 0) View.VISIBLE else View.GONE
-        tvViews.text = formatCount(wallpaper.views)
-
         renderColors()
         renderLike(FavoritesStore.isLiked(this@WallpaperPreviewActivity, wallpaper))
     }
@@ -181,7 +174,6 @@ class WallpaperPreviewActivity : AppCompatActivity() {
         btnDownload.setOnClickListener { onDownloadClicked() }
         btnSet.setOnClickListener { chooseWallpaperTarget() }
         btnShare.setOnClickListener { shareWallpaper(this@WallpaperPreviewActivity, wallpaper) }
-        btnInfo.setOnClickListener { showInfo() }
     }
 
     private fun renderLike(liked: Boolean) {
@@ -268,24 +260,6 @@ class WallpaperPreviewActivity : AppCompatActivity() {
         }
     }
     // endregion
-
-    private fun showInfo() {
-        val details = buildString {
-            ImageDimensions.label(wallpaper)?.let { appendLine("Resolution: $it") }
-            formatFileSize(wallpaper.fileSize).takeIf { it.isNotEmpty() }?.let { appendLine("File size: $it") }
-            wallpaper.fileType?.let { appendLine("Type: $it") }
-            wallpaper.author?.let { appendLine("Author: $it") }
-            if (wallpaper.views > 0) appendLine("Views: ${formatCount(wallpaper.views)}")
-            append("Source: ${wallpaper.source}")
-        }
-        MaterialAlertDialogBuilder(this)
-            .setTitle(R.string.lbl_menu_about)
-            .setMessage(details)
-            .setPositiveButton(R.string.lbl_close, null)
-            // Lets an owner ask for removal/credit of this exact image
-            .setNeutralButton(R.string.lbl_report_image) { _, _ -> emailReport(this, wallpaper) }
-            .show()
-    }
 
     /** Tap the image to hide/show the overlays and enjoy the full wallpaper. */
     private fun toggleControls() {
