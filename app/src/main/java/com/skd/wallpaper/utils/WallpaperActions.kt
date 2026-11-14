@@ -30,10 +30,10 @@ import java.io.File
 import java.util.Locale
 
 /**
- * Saved under Pictures/Wallora/Download. Android 10+ only lets apps write into the
+ * Saved under Pictures/Wallvyn/Download. Android 10+ only lets apps write into the
  * standard shared folders (Pictures, Download, …), not a new folder at the storage root.
  */
-const val DOWNLOAD_FOLDER = "Wallora/Download"
+const val DOWNLOAD_FOLDER = "Wallvyn/Download"
 
 fun formatCount(count: Int): String = when {
     count >= 1_000_000 -> String.format(Locale.US, "%.1fM", count / 1_000_000f)
@@ -68,7 +68,7 @@ object WallpaperDownloader {
     )
 
     /**
-     * True if [wallpaper] is in Pictures/Wallora/Download. No read permission is needed: the app
+     * True if [wallpaper] is in Pictures/Wallvyn/Download. No read permission is needed: the app
      * can always see the images it saved itself (the file, and on Android 10+ also the system
      * media index). Downloads from before a reinstall aren't the app's own anymore, so they count
      * as not downloaded. A file the user deleted also counts as not downloaded.
@@ -88,7 +88,7 @@ object WallpaperDownloader {
     }
 
     /**
-     * Saves the full-resolution image to Pictures/Wallora/Download using the system
+     * Saves the full-resolution image to Pictures/Wallvyn/Download using the system
      * DownloadManager (shows a notification and survives the app being closed).
      * Emits progress until the download finishes.
      */
@@ -174,7 +174,7 @@ fun shareWallpaper(context: Context, wallpaper: Wallpaper) {
 }
 
 /**
- * Opens an email to the Wallora contact address for reports and copyright removal requests.
+ * Opens an email to the Wallvyn contact address for reports and copyright removal requests.
  * When [wallpaper] is given, its link, source and ID are included so it can be found and removed.
  */
 fun emailReport(context: Context, wallpaper: Wallpaper? = null) {

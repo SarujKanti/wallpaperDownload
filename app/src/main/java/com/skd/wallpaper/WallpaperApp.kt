@@ -17,7 +17,7 @@ class WallpaperApp : Application() {
         ThemeManager.applySaved(this)
         // Phones: every screen stays in portrait; tablets can rotate (see DeviceUtils)
         registerActivityLifecycleCallbacks(OrientationLock)
-        // "New trending wallpapers" reminder every 14 hours (kept if already scheduled)
+        // "New trending wallpapers" reminder every 24 hours (an older 14-hour schedule is updated)
         TrendingNotifier.createChannel(this)
         TrendingNotifier.schedule(this)
         // Pushes sent from the Firebase console to every install
