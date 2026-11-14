@@ -2,6 +2,7 @@ package com.skd.wallpaper.utils
 
 import android.app.DownloadManager
 import android.app.WallpaperManager
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -10,12 +11,15 @@ import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
+import android.widget.Toast
 import coil.imageLoader
 import coil.request.ImageRequest
 import coil.request.SuccessResult
 import coil.size.Precision
+import com.skd.wallpaper.BuildConfig
 import com.skd.wallpaper.R
 import com.skd.wallpaper.model.Wallpaper
+import com.skd.wallpaper.network.RetrofitClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -99,7 +103,7 @@ object WallpaperDownloader {
             .setTitle(fileName)
             .setDescription(ImageDimensions.label(wallpaper)?.let { "Wallpaper $it" } ?: "Wallpaper")
             .setMimeType(wallpaper.fileType ?: "image/jpeg")
-            .addRequestHeader("User-Agent", "WallpaperView-Android/1.0")
+            .addRequestHeader("User-Agent", RetrofitClient.USER_AGENT)
             .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
             .setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES, "$DOWNLOAD_FOLDER/$fileName")
         @Suppress("DEPRECATION")
@@ -167,4 +171,28 @@ fun shareWallpaper(context: Context, wallpaper: Wallpaper) {
             context.getString(R.string.lbl_share)
         )
     )
+}
+
+/**
+ * Opens an email to the Wallora contact address for reports and copyright removal requests.
+ * When [wallpaper] is given, its link, source and ID are included so it can be found and removed.
+ */
+fun emailReport(context: Context, wallpaper: Wallpaper? = null) {
+    val email = context.getString(R.string.contact_email)
+    val body = buildString {
+        append(context.getString(R.string.lbl_report_body))
+        wallpaper?.let {
+            append(context.getString(R.string.lbl_report_image_details, it.pageUrl ?: it.fullUrl, it.source, it.id))
+        }
+        append("\nApp version: ${BuildConfig.VERSION_NAME}")
+    }
+    val intent = Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:"))
+        .putExtra(Intent.EXTRA_EMAIL, arrayOf(email))
+        .putExtra(Intent.EXTRA_SUBJECT, context.getString(R.string.lbl_report_subject))
+        .putExtra(Intent.EXTRA_TEXT, body)
+    try {
+        context.startActivity(intent)
+    } catch (e: ActivityNotFoundException) {
+        Toast.makeText(context, context.getString(R.string.msg_no_email_app, email), Toast.LENGTH_LONG).show()
+    }
 }

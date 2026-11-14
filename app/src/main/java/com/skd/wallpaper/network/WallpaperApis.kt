@@ -129,6 +129,13 @@ interface PixabayApi {
         @Query("safesearch") safeSearch: Boolean = true,
         @Query("order") order: String = "popular"
     ): PixabayResponse
+
+    /** One image by its ID: gives fresh image URLs for a liked photo (stored links expire). */
+    @GET("api/")
+    suspend fun byId(
+        @Query("key") key: String,
+        @Query("id") id: String
+    ): PixabayResponse
 }
 
 data class PixabayResponse(

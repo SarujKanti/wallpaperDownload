@@ -14,7 +14,8 @@ data class Category(
     val query: String? = null,
     val color: String? = null,
     val sorting: String = "favorites",
-    // Wallhaven category bits: general / anime / people. "100" = general only (cleanest results)
+    // Wallhaven category bits: general / anime / people. Always "100" (general only): anime and
+    // people images are mostly copyrighted characters or recognisable persons
     val apiCategories: String = "100",
     val storageFolder: String? = null,
     // Show the feed in a new random order every day (same order all day, also across pages)
@@ -41,7 +42,6 @@ data class Category(
             Category("Trending", "🔥", query = "landscape", shuffleDaily = true),
             Category("Latest", "✨", query = "landscape", sorting = "date_added"),
             Category("Nature", "🌿", query = "nature", storageFolder = "nature"),
-            Category("Anime", "🎌", query = "landscape", apiCategories = "010"),
             Category("Space", "🚀", query = "space"),
             Category("Cars", "🏎️", query = "cars", storageFolder = "cars"),
             Category("City", "🌃", query = "city"),
@@ -78,6 +78,6 @@ data class Category(
             OWN_FOLDER_LABELS.keys.indexOf(folder.lowercase()).let { if (it < 0) Int.MAX_VALUE else it }
 
         fun search(query: String) =
-            Category(query, "🔍", query = query, sorting = "relevance", apiCategories = "110", photoSearch = true)
+            Category(query, "🔍", query = query, sorting = "relevance", photoSearch = true)
     }
 }

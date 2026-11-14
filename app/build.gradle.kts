@@ -3,8 +3,8 @@ import java.util.Properties
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    // Needed by data binding (activity_main_dashboard.xml uses <layout>)
     kotlin("kapt")
-    id("kotlin-kapt")
 }
 
 // Secrets live in local.properties (git-ignored), e.g.
@@ -23,8 +23,8 @@ android {
         applicationId = "com.skd.wallpaper"
         minSdk = 24
         targetSdk = 36
-        versionCode = 4
-        versionName = "1.1.3"
+        versionCode = 5
+        versionName = "1.2.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -35,7 +35,9 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            // R8: removes unused code and resources and shrinks the release app (see proguard-rules.pro)
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -70,9 +72,6 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 
-    implementation("androidx.room:room-runtime:2.6.1")
-    kapt("androidx.room:room-compiler:2.6.1")
-    implementation("androidx.room:room-ktx:2.6.1")
 
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
