@@ -417,14 +417,9 @@ class MainDashboardActivity :
             setStroke((1 * density).toInt(), ContextCompat.getColor(this@MainDashboardActivity, R.color.glass_stroke))
         }
         window.setBackgroundDrawable(panel)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && canBlur) {
-            window.setBackgroundBlurRadius((40 * density).toInt())
-            window.addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND)
-            window.attributes = window.attributes.apply {
-                blurBehindRadius = (12 * density).toInt()
-                dimAmount = 0.25f
-            }
-        }
+        // Same glass as every dialog: strong blur under the drawer, soft blur + dim on the rest
+        if (canBlur) Glass.blurBehind(window, this, screenRadiusDp = 22)
+        window.setDimAmount(0.35f)
     }
 
     /** Keeps the drawer's header text below the status bar and its footer above the nav bar. */

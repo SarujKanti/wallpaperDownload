@@ -11,10 +11,10 @@
     <color name="card_stroke">#33FFFFFF</color>
 
     <!-- Frosted-glass drawer (dark) -->
-    <color name="glass_panel">#A60E0E1A</color>
-    <color name="glass_panel_solid">#F00E0E1A</color>
-    <color name="glass_group">#1AFFFFFF</color>
-    <color name="glass_stroke">#26FFFFFF</color>
+    <color name="glass_panel">#E60E0E1A</color>
+    <color name="glass_panel_solid">#FA0E0E1A</color>
+    <color name="glass_group">#14FFFFFF</color>
+    <color name="glass_stroke">#2EFFFFFF</color>
     <color name="glass_separator">#1AFFFFFF</color>
 
     <!-- Category tabs (dark) -->
