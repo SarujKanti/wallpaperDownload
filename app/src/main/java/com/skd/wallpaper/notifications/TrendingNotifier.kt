@@ -69,21 +69,35 @@ object TrendingNotifier {
             PackageManager.PERMISSION_GRANTED) &&
             NotificationManagerCompat.from(context).areNotificationsEnabled()
 
+    /** The 14-hour reminder. */
+    fun show(context: Context, preview: Bitmap?) = post(
+        context,
+        title = context.getString(R.string.notif_trending_title),
+        text = context.getString(R.string.notif_trending_text),
+        tab = null,
+        preview = preview,
+        id = NOTIFICATION_ID
+    )
+
+    /**
+     * Posts a notification that opens the dashboard on [tab] (a tab title such as "Nature";
+     * Trending when null or unknown). Also used for pushes sent from the Firebase console.
+     */
     @android.annotation.SuppressLint("MissingPermission") // checked by canNotify()
-    fun show(context: Context, preview: Bitmap?) {
+    fun post(context: Context, title: String, text: String?, tab: String?, preview: Bitmap?, id: Int) {
         if (!canNotify(context)) return
-        val openTrending = Intent(context, MainDashboardActivity::class.java)
-            .putExtra(MainDashboardActivity.EXTRA_TAB, Category.DEFAULT.first().title)
+        val openTab = Intent(context, MainDashboardActivity::class.java)
+            .putExtra(MainDashboardActivity.EXTRA_TAB, tab ?: Category.DEFAULT.first().title)
             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         val tap = PendingIntent.getActivity(
-            context, 0, openTrending,
+            context, id, openTab,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
         val builder = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification)
             .setColor(ContextCompat.getColor(context, R.color.notification_accent))
-            .setContentTitle(context.getString(R.string.notif_trending_title))
-            .setContentText(context.getString(R.string.notif_trending_text))
+            .setContentTitle(title)
+            .setContentText(text)
             .setContentIntent(tap)
             .setAutoCancel(true)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
@@ -92,8 +106,18 @@ object TrendingNotifier {
                 NotificationCompat.BigPictureStyle().bigPicture(preview).bigLargeIcon(null as Bitmap?)
             )
         }
-        NotificationManagerCompat.from(context).notify(NOTIFICATION_ID, builder.build())
+        NotificationManagerCompat.from(context).notify(id, builder.build())
     }
+
+    /** Loads an image URL as a software bitmap for a notification, or null on failure. */
+    suspend fun loadBitmap(context: Context, url: String): Bitmap? = runCatching {
+        val request = ImageRequest.Builder(context)
+            .data(url)
+            .allowHardware(false) // notifications need a software bitmap
+            .size(720, 720)
+            .build()
+        (context.imageLoader.execute(request) as? SuccessResult)?.drawable?.toBitmap()
+    }.getOrNull()
 }
 
 /** Fetches today's top trending wallpaper as the preview, then posts the reminder. */
@@ -109,12 +133,6 @@ class TrendingWorker(context: Context, params: WorkerParameters) : CoroutineWork
 
     private suspend fun loadPreview(): Bitmap? {
         val top = WallpaperRepository.load(Category.DEFAULT.first(), 1).items.firstOrNull() ?: return null
-        val request = ImageRequest.Builder(applicationContext)
-            .data(top.thumbUrl)
-            .allowHardware(false) // notifications need a software bitmap
-            .size(720, 720)
-            .build()
-        val result = applicationContext.imageLoader.execute(request) as? SuccessResult ?: return null
-        return result.drawable.toBitmap()
+        return TrendingNotifier.loadBitmap(applicationContext, top.thumbUrl)
     }
 }

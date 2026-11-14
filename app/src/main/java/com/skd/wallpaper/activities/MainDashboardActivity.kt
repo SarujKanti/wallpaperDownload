@@ -302,9 +302,9 @@ class MainDashboardActivity :
         }
         binding.viewPager.adapter = tabsAdapter
         binding.viewPager.offscreenPageLimit = 1
-        // Reopened after a theme change: go back to the tab that was open
+        // Reopened after a theme change, or opened from a notification: show that tab
         intent.getStringExtra(EXTRA_TAB)?.let { title ->
-            categories.indexOfFirst { it.title == title }.takeIf { it > 0 }?.let { binding.viewPager.setCurrentItem(it, false) }
+            categories.indexOfFirst { it.title.equals(title.trim(), ignoreCase = true) }.takeIf { it > 0 }?.let { binding.viewPager.setCurrentItem(it, false) }
         }
         binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {

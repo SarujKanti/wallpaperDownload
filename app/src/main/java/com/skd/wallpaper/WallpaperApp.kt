@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Application
 import android.os.Build
 import android.os.Bundle
+import com.skd.wallpaper.notifications.PushService
 import com.skd.wallpaper.notifications.TrendingNotifier
 import com.skd.wallpaper.utils.DeviceUtils
 import com.skd.wallpaper.utils.ThemeManager
@@ -19,6 +20,8 @@ class WallpaperApp : Application() {
         // "New trending wallpapers" reminder every 14 hours (kept if already scheduled)
         TrendingNotifier.createChannel(this)
         TrendingNotifier.schedule(this)
+        // Pushes sent from the Firebase console to every install
+        PushService.subscribe(this)
     }
 
     private object OrientationLock : ActivityLifecycleCallbacks {

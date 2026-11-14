@@ -88,4 +88,13 @@ dependencies {
 
     // Repeating "new trending wallpapers" reminder
     implementation("androidx.work:work-runtime-ktx:2.10.1")
+
+    // Push notifications sent from the Firebase console to every install
+    implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
+    implementation("com.google.firebase:firebase-messaging")
+}
+// Firebase reads app/google-services.json (downloaded from the Firebase console, git-ignored).
+// Without it the app still builds and runs; push notifications are simply off.
+if (file("google-services.json").exists()) {
+    apply(plugin = "com.google.gms.google-services")
 }

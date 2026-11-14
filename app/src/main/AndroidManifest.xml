@@ -26,6 +26,25 @@
         android:requestLegacyExternalStorage="true"
         android:theme="@style/Theme.Wallpaper"
         tools:targetApi="31">
+        <!-- Push notifications from the Firebase console (see PushService) -->
+        <service
+            android:name=".notifications.PushService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <!-- Look of pushes Android shows itself while the app is closed -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_notification" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/notification_accent" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="trending" />
+
         <activity
             android:name=".activities.SplashActivity"
             android:exported="true"
