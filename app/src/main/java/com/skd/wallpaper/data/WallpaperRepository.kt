@@ -123,7 +123,7 @@ object WallpaperRepository {
         loadWallhaven(category, page)
     } catch (e: Exception) {
         if (e is kotlinx.coroutines.CancellationException) throw e
-        loadPicsum(page, grayscale = category.color == "000000")
+        loadPicsum(page, grayscale = category.grayscaleFallback)
     }
 
     private suspend fun loadWallhaven(category: Category, page: Int): WallpaperPage {
@@ -144,10 +144,11 @@ object WallpaperRepository {
 
     private suspend fun searchWallhaven(category: Category, page: Int) =
         RetrofitClient.wallhaven.search(
-            query = category.query,
+            query = category.wallhavenQuery,
             colors = category.color,
             sorting = category.sorting,
             categories = category.apiCategories,
+            ratios = category.ratios,
             page = page,
             topRange = if (category.sorting == "toplist") "1y" else null
         )

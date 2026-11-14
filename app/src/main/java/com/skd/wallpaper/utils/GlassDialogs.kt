@@ -9,13 +9,11 @@ import android.view.Gravity
 import android.view.Window
 import android.view.WindowManager
 import androidx.annotation.ColorRes
-import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.skd.wallpaper.R
 
 /**
- * One frosted-glass look for every dialog in the app.
+ * One frosted-glass look for every dialog in the app (see [styleAsCenteredGlass]).
  * On Android 12+ the window blurs whatever is behind it; where blur isn't available
  * (Android 11 and older, or turned off by the system, e.g. battery saver) a more opaque
  * frosted color is used so text always stays readable.
@@ -74,23 +72,4 @@ fun Dialog.styleAsCenteredGlass(
     val width = minOf(activity.resources.displayMetrics.widthPixels - 2 * margin, (420 * density).toInt())
     window.setLayout(width, WindowManager.LayoutParams.WRAP_CONTENT)
     window.setGravity(Gravity.CENTER)
-}
-
-/**
- * Shows this Material dialog as frosted glass (same look as the drawer and Set dialog).
- * Use instead of [MaterialAlertDialogBuilder.show].
- */
-fun MaterialAlertDialogBuilder.showGlass(activity: Activity): AlertDialog {
-    val blur = Glass.canBlur(activity)
-    // The builder keeps its usual insets around this background, so the dialog's size and
-    // spacing stay the same; only the surface changes.
-    background = Glass.panel(activity, blur)
-    return create().apply {
-        window?.let { window ->
-            if (blur) Glass.blurBehind(window, activity)
-            window.setDimAmount(0.4f)
-            window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-        }
-        show()
-    }
 }

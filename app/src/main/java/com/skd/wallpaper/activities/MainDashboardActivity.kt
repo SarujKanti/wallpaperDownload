@@ -41,13 +41,14 @@ import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import coil.load
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.skd.wallpaper.BuildConfig
 import com.skd.wallpaper.R
 import com.skd.wallpaper.data.CategoryRepository
+import com.skd.wallpaper.data.FavoritesStore
 import com.skd.wallpaper.databinding.ActivityMainDashboardBinding
+import com.skd.wallpaper.databinding.DialogAboutBinding
 import com.skd.wallpaper.databinding.DialogChooseThemeBinding
 import com.skd.wallpaper.databinding.DialogFullscreenPartialBinding
 import com.skd.wallpaper.databinding.ItemThemeOptionBinding
@@ -60,7 +61,6 @@ import com.skd.wallpaper.utils.BaseActivity
 import com.skd.wallpaper.utils.ThemeManager
 import com.skd.wallpaper.utils.Glass
 import com.skd.wallpaper.utils.emailReport
-import com.skd.wallpaper.utils.showGlass
 import com.skd.wallpaper.utils.styleAsCenteredGlass
 import kotlinx.coroutines.launch
 
@@ -348,6 +348,18 @@ class MainDashboardActivity :
         padDrawerForSystemBars(drawer)
 
         drawer.tvVersion.text = getString(R.string.lbl_version, BuildConfig.VERSION_NAME)
+        drawer.chipVersion.text = getString(R.string.lbl_version_chip, BuildConfig.VERSION_NAME)
+
+        // Liked count: header chip (tap to open Liked) and a badge on the Liked row
+        val likedCount = FavoritesStore.getAll(this).size
+        drawer.chipLiked.text = getString(R.string.lbl_liked_chip, likedCount)
+        drawer.chipLiked.setOnClickListener {
+            openLiked()
+            dialog.dismiss()
+        }
+        drawer.tvLikedCount.text = likedCount.toString()
+        drawer.tvLikedCount.visibility = if (likedCount > 0) View.VISIBLE else View.GONE
+
         drawer.menuExplore.setOnClickListener {
             binding.viewPager.setCurrentItem(0, true)
             dialog.dismiss()
@@ -375,11 +387,7 @@ class MainDashboardActivity :
         }
         drawer.menuAbout.setOnClickListener {
             dialog.dismiss()
-            MaterialAlertDialogBuilder(this)
-                .setTitle(R.string.lbl_git_repo)
-                .setMessage(getString(R.string.lbl_about_msg, getString(R.string.contact_email)))
-                .setPositiveButton(R.string.lbl_close, null)
-                .showGlass(this)
+            showAbout()
         }
         dialog.show()
     }
@@ -449,6 +457,24 @@ class MainDashboardActivity :
             marginStart += bars.left
         }
         drawer.headerContent.updatePadding(left = drawer.headerContent.paddingLeft + bars.left)
+    }
+
+    /** Glass About card: version, image sources, privacy, copyright and a contact button. */
+    private fun showAbout() {
+        val dialog = Dialog(this, R.style.GlassDialog)
+        val about = DialogAboutBinding.inflate(layoutInflater)
+        dialog.setContentView(about.root)
+
+        about.tvAboutVersion.text =
+            getString(R.string.about_version, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE)
+        about.btnAboutContact.setOnClickListener {
+            dialog.dismiss()
+            emailReport(this)
+        }
+        about.btnAboutClose.setOnClickListener { dialog.dismiss() }
+
+        dialog.styleAsCenteredGlass(this)
+        dialog.show()
     }
 
     /** Glass "Choose theme" card: System default / Light / Dark, current one ticked. */
