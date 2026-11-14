@@ -37,20 +37,20 @@ import java.util.concurrent.TimeUnit
  */
 object TrendingNotifier {
 
-    private const val INTERVAL_HOURS = 14L
+    private const val INTERVAL_HOURS = 24L
     private const val WORK_NAME = "trending_reminder"
     private const val CHANNEL_ID = "trending"
     private const val NOTIFICATION_ID = 1401
 
-    /** Starts the repeating reminder (does nothing if it is already scheduled). */
+    /** Starts the repeating reminder; an existing schedule is updated to the current interval. */
     fun schedule(context: Context) {
         val request = PeriodicWorkRequestBuilder<TrendingWorker>(INTERVAL_HOURS, TimeUnit.HOURS)
-            // First one 14 hours after install, not the moment the app is opened
+            // First one 24 hours after install, not the moment the app is opened
             .setInitialDelay(INTERVAL_HOURS, TimeUnit.HOURS)
             .setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
             .build()
         WorkManager.getInstance(context)
-            .enqueueUniquePeriodicWork(WORK_NAME, ExistingPeriodicWorkPolicy.KEEP, request)
+            .enqueueUniquePeriodicWork(WORK_NAME, ExistingPeriodicWorkPolicy.UPDATE, request)
     }
 
     fun createChannel(context: Context) {
@@ -69,7 +69,7 @@ object TrendingNotifier {
             PackageManager.PERMISSION_GRANTED) &&
             NotificationManagerCompat.from(context).areNotificationsEnabled()
 
-    /** The 14-hour reminder. */
+    /** The daily (24-hour) reminder. */
     fun show(context: Context, preview: Bitmap?) = post(
         context,
         title = context.getString(R.string.notif_trending_title),
