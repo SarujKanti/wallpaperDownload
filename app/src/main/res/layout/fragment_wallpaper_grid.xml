@@ -21,23 +21,6 @@
             android:paddingBottom="16dp" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <ProgressBar
-        android:id="@+id/progressCenter"
-        android:layout_width="44dp"
-        android:layout_height="44dp"
-        android:layout_gravity="center"
-        android:indeterminateDrawable="@drawable/progressbar_custome"
-        android:visibility="gone" />
-
-    <ProgressBar
-        android:id="@+id/progressMore"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_gravity="bottom|center_horizontal"
-        android:layout_marginBottom="24dp"
-        android:indeterminateDrawable="@drawable/progressbar_custome"
-        android:visibility="gone" />
-
     <LinearLayout
         android:id="@+id/stateView"
         android:layout_width="match_parent"

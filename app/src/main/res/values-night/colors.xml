@@ -18,6 +18,11 @@
     <color name="glass_separator">#1AFFFFFF</color>
     <color name="theme_option_selected">#337C4DFF</color>
 
+    <!-- Loading skeleton cards -->
+    <color name="skeleton_base">#1C1C2D</color>
+    <color name="skeleton_line">#29293F</color>
+    <color name="skeleton_shine">#1FFFFFFF</color>
+
     <!-- Category tabs (dark) -->
     <color name="tab_surface">#1A1A2C</color>
     <color name="tab_stroke">#2F2A4D</color>
