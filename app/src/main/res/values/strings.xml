@@ -85,6 +85,12 @@
     <string name="about_copyright_body">All images belong to their creators. Wallora does not claim ownership of any image. If you own an image and want it credited or removed, contact us and we will respond.</string>
     <string name="about_contact">Request removal or contact</string>
 
+    <!-- Trending reminder notification -->
+    <string name="notif_trending_title">New trending wallpapers arrived ✨</string>
+    <string name="notif_trending_text">Tap to see what\'s trending on Wallora today</string>
+    <string name="notif_channel_trending">Trending wallpapers</string>
+    <string name="notif_channel_trending_desc">A reminder when new trending wallpapers are in</string>
+
     <!-- Contact / takedown -->
     <string name="contact_email" translatable="false">14skd12@gmail.com</string>
     <string name="lbl_menu_report">Report or request removal</string>

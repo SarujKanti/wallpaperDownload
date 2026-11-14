@@ -85,4 +85,7 @@ dependencies {
 
     // Image loading
     implementation("io.coil-kt:coil:2.7.0")
+
+    // Repeating "new trending wallpapers" reminder
+    implementation("androidx.work:work-runtime-ktx:2.10.1")
 }
