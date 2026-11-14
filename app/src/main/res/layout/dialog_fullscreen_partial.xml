@@ -245,6 +245,28 @@
                     android:layout_marginStart="64dp"
                     android:background="@color/glass_separator" />
                 <LinearLayout
+                    android:id="@+id/menuReport"
+                    style="@style/DrawerRow">
+
+                    <ImageView
+                        style="@style/DrawerRowIcon"
+                        android:backgroundTint="@color/menu_liked_bg"
+                        android:src="@drawable/ic_flag"
+                        app:tint="@color/menu_liked" />
+
+                    <TextView
+                        style="@style/DrawerRowTitle"
+                        android:text="@string/lbl_menu_report" />
+
+                    <ImageView style="@style/DrawerRowChevron" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.6dp"
+                    android:layout_marginStart="64dp"
+                    android:background="@color/glass_separator" />
+                <LinearLayout
                     android:id="@+id/menuAbout"
                     style="@style/DrawerRow">
 

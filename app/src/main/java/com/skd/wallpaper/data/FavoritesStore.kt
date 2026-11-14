@@ -30,6 +30,13 @@ object FavoritesStore {
         return liked
     }
 
+    /** Updates stored entries (e.g. refreshed image links), keeping likes made meanwhile. */
+    fun replaceAll(context: Context, updated: List<Wallpaper>) {
+        val byKey = updated.associateBy { it.key }
+        val merged = getAll(context).map { byKey[it.key] ?: it }
+        prefs(context).edit().putString(KEY, gson.toJson(merged)).apply()
+    }
+
     private fun prefs(context: Context) =
         context.applicationContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
 }

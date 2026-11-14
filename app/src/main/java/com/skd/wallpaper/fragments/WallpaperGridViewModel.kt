@@ -46,6 +46,21 @@ class WallpaperGridViewModel : ViewModel() {
         _state.value = LoadState.IDLE
     }
 
+    private var refreshJob: Job? = null
+
+    /** Looks liked Pixabay photos up again for current links; [onRefreshed] stores the result. */
+    fun refreshLiked(liked: List<Wallpaper>, onRefreshed: (List<Wallpaper>) -> Unit) {
+        if (liked.none { it.source == WallpaperRepository.PIXABAY_SOURCE }) return
+        refreshJob?.cancel()
+        refreshJob = viewModelScope.launch {
+            val refreshed = WallpaperRepository.refreshLiked(liked)
+            if (refreshed != liked) {
+                _items.value = refreshed
+                onRefreshed(refreshed)
+            }
+        }
+    }
+
     private fun load(reset: Boolean, loadingState: LoadState) {
         job?.cancel()
         if (reset) {

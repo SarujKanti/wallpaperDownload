@@ -34,6 +34,7 @@ import com.skd.wallpaper.utils.WallpaperDownloader
 import com.skd.wallpaper.utils.WallpaperSetter
 import com.skd.wallpaper.utils.formatCount
 import com.skd.wallpaper.utils.formatFileSize
+import com.skd.wallpaper.utils.emailReport
 import com.skd.wallpaper.utils.shareWallpaper
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -281,6 +282,8 @@ class WallpaperPreviewActivity : AppCompatActivity() {
             .setTitle(R.string.lbl_menu_about)
             .setMessage(details)
             .setPositiveButton(R.string.lbl_close, null)
+            // Lets an owner ask for removal/credit of this exact image
+            .setNeutralButton(R.string.lbl_report_image) { _, _ -> emailReport(this, wallpaper) }
             .show()
     }
 

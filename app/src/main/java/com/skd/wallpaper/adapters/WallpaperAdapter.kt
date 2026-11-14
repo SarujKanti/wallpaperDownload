@@ -18,6 +18,7 @@ import com.skd.wallpaper.model.Category
 import com.skd.wallpaper.model.Wallpaper
 import com.skd.wallpaper.utils.ImageDimensions
 import com.skd.wallpaper.utils.WallpaperText
+import com.skd.wallpaper.utils.emailReport
 import com.skd.wallpaper.utils.shareWallpaper
 
 /** 4:5 wallpaper cards with a title, "4K • Portrait" info, like button and menu. */
@@ -82,11 +83,13 @@ class WallpaperAdapter(
                 menu.add(0, MENU_OPEN, 0, R.string.lbl_open)
                 menu.add(0, MENU_LIKE, 1, if (liked) R.string.lbl_unlike else R.string.lbl_like)
                 menu.add(0, MENU_SHARE, 2, R.string.lbl_share)
+                menu.add(0, MENU_REPORT, 3, R.string.lbl_report_image)
                 setOnMenuItemClickListener { menuItem ->
                     when (menuItem.itemId) {
                         MENU_OPEN -> onClick(item)
                         MENU_LIKE -> onLikeClick(item)
                         MENU_SHARE -> shareWallpaper(anchor.context, item)
+                        MENU_REPORT -> emailReport(anchor.context, item)
                     }
                     true
                 }
@@ -127,5 +130,6 @@ class WallpaperAdapter(
         private const val MENU_OPEN = 1
         private const val MENU_LIKE = 2
         private const val MENU_SHARE = 3
+        private const val MENU_REPORT = 4
     }
 }

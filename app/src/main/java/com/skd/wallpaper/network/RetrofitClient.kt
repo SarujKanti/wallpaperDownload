@@ -21,6 +21,9 @@ object RetrofitClient {
     private const val PICSUM_URL = "https://picsum.photos/"
     private const val PIXABAY_URL = "https://pixabay.com/"
 
+    /** Identifies the app honestly to every image server (API etiquette; lets them contact us). */
+    val USER_AGENT = "Wallora-Android/${BuildConfig.VERSION_NAME} (${BuildConfig.APPLICATION_ID})"
+
     private val client: OkHttpClient by lazy {
         OkHttpClient.Builder()
             .connectTimeout(20, TimeUnit.SECONDS)
@@ -28,7 +31,7 @@ object RetrofitClient {
             .addInterceptor { chain ->
                 chain.proceed(
                     chain.request().newBuilder()
-                        .header("User-Agent", "WallpaperView-Android/1.0")
+                        .header("User-Agent", USER_AGENT)
                         .build()
                 )
             }

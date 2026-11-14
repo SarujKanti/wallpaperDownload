@@ -1,18 +1,13 @@
 <resources>
     <string name="app_name">Wallora ✨</string>
-    <string name="app_search_title">Search by name or ID</string>
     <string name="lbl_search">Search</string>
     <string name="lbl_welcome">Welcome to</string>
     <string name="lbl_git_repo">Wallora</string>
     <string name="lbl_present">Presented by Saruj</string>
-    <string name="lbl_check_internet_connection">Check Internet Connection</string>
     <string name="lbl_close">Close</string>
-    <string name="lbl_show_local_data">No Internet Connection Found</string>
-    <string name="lbl_repo_url">GitHub Repository URL</string>
-    <string name="lbl_notification_permission">Notification permission granted</string>
 
     <string name="lbl_tagline">Wallpapers for every mood</string>
-    <string name="lbl_search_hint">Search wallpapers, e.g. mountains, anime, minimal…</string>
+    <string name="lbl_search_hint">Search wallpapers, e.g. mountains, ocean, minimal…</string>
     <string name="lbl_explore">Explore</string>
     <string name="lbl_headline">Set the mood, Find your vibe.✨</string>
     <string name="lbl_headline_accent">vibe.</string>
@@ -60,8 +55,28 @@
     <string name="lbl_theme_dark">Dark</string>
     <string name="lbl_menu_share">Share app</string>
     <string name="lbl_menu_about">About</string>
-    <string name="lbl_about_msg">Wallora brings you thousands of free, high-resolution wallpapers.\n\nWallpapers are provided by the free Wallhaven API (SFW only) with Lorem Picsum as a backup source. Search results for real-world things use photos from Pixabay. All downloads are saved to Pictures/Wallora/Download.</string>
+    <string name="lbl_about_msg">Wallora collects free wallpapers from public sources: Wallhaven (safe-for-work only), Lorem Picsum (Unsplash photos), Pixabay (search results) and the Wallora collection.
+
+All images remain the property of their original creators and owners. Wallora does not claim ownership of any image.
+
+If you own an image and want it credited or removed, use "Report or request removal" in the menu, or email %1$s. We respond to every request.
+
+Downloads are saved to Pictures/Wallora/Download.</string>
     <string name="lbl_version">Version %1$s</string>
+
+    <!-- Contact / takedown -->
+    <string name="contact_email" translatable="false">14skd12@gmail.com</string>
+    <string name="lbl_menu_report">Report or request removal</string>
+    <string name="lbl_report_image">Report image</string>
+    <string name="lbl_report_subject">Wallora: report / removal request</string>
+    <string name="lbl_report_body">Please describe the issue (e.g. you own this image and want it removed or credited).
+
+</string>
+    <string name="lbl_report_image_details">Image: %1$s
+Source: %2$s
+ID: %3$s
+</string>
+    <string name="msg_no_email_app">No email app found. Please email %1$s</string>
     <string name="cd_back">Back</string>
     <string name="cd_menu">Menu</string>
     <string name="cd_like">Like</string>

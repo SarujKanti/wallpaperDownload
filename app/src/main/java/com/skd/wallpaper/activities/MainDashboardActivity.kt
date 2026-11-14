@@ -55,6 +55,7 @@ import com.skd.wallpaper.model.Wallpaper
 import com.skd.wallpaper.utils.AppTheme
 import com.skd.wallpaper.utils.BaseActivity
 import com.skd.wallpaper.utils.ThemeManager
+import com.skd.wallpaper.utils.emailReport
 import kotlinx.coroutines.launch
 
 class MainDashboardActivity :
@@ -350,11 +351,15 @@ class MainDashboardActivity :
             dialog.dismiss()
             shareApp()
         }
+        drawer.menuReport.setOnClickListener {
+            dialog.dismiss()
+            emailReport(this)
+        }
         drawer.menuAbout.setOnClickListener {
             dialog.dismiss()
             MaterialAlertDialogBuilder(this)
                 .setTitle(R.string.lbl_git_repo)
-                .setMessage(R.string.lbl_about_msg)
+                .setMessage(getString(R.string.lbl_about_msg, getString(R.string.contact_email)))
                 .setPositiveButton(R.string.lbl_close, null)
                 .show()
         }

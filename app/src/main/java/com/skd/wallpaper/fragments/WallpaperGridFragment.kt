@@ -153,7 +153,12 @@ class WallpaperGridFragment : Fragment() {
     private fun refreshLikes() {
         val liked = FavoritesStore.getAll(requireContext())
         adapter.likedKeys = liked.mapTo(HashSet()) { it.key }
-        if (category.isLiked) viewModel.setItems(liked)
+        if (category.isLiked) {
+            viewModel.setItems(liked)
+            // Swap in fresh Pixabay links (Pixabay doesn't allow keeping its links permanently)
+            val appContext = requireContext().applicationContext
+            viewModel.refreshLiked(liked) { refreshed -> FavoritesStore.replaceAll(appContext, refreshed) }
+        }
     }
 
     override fun onDestroyView() {

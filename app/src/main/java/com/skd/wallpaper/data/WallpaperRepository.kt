@@ -39,6 +39,7 @@ object WallpaperRepository {
     // Which source each search term ended up using, so all its pages come from one source
     private val searchSource = ConcurrentHashMap<String, SearchSource>()
     private val pixabayCache = ConcurrentHashMap<String, Pair<Long, WallpaperPage>>()
+    private val pixabayByIdCache = ConcurrentHashMap<String, Pair<Long, Wallpaper>>()
     private const val STORAGE_PAGE_SIZE = 30
     // Mixed tabs fetch the whole (small) folder with the first page, before the online results
     private const val STORAGE_LIMIT = 200
@@ -211,6 +212,28 @@ object WallpaperRepository {
         // Pixabay asks API users to cache results for 24 hours (its image URLs also expire then)
         pixabayCache[cacheKey] = System.currentTimeMillis() to result
         return result
+    }
+
+    /**
+     * Pixabay doesn't allow keeping its image links permanently (they also expire after ~24h).
+     * Liked Pixabay photos are therefore looked up again by ID to get current links; results
+     * are cached for 24h as Pixabay requires. Other sources, and photos that can't be looked
+     * up right now (offline, removed from Pixabay), are returned unchanged.
+     */
+    suspend fun refreshLiked(items: List<Wallpaper>): List<Wallpaper> = coroutineScope {
+        if (!RetrofitClient.isPixabayConfigured) return@coroutineScope items
+        items.map { item ->
+            async {
+                if (item.source != PIXABAY_SOURCE) return@async item
+                val cached = pixabayByIdCache[item.id]
+                    ?.takeIf { System.currentTimeMillis() - it.first < PIXABAY_CACHE_MS }?.second
+                cached ?: runCatching {
+                    RetrofitClient.pixabay.byId(BuildConfig.PIXABAY_API_KEY, item.id).hits.firstOrNull()
+                        ?.toWallpaper()
+                        ?.also { pixabayByIdCache[item.id] = System.currentTimeMillis() to it }
+                }.getOrNull() ?: item
+            }
+        }.awaitAll()
     }
 
     private fun PixabayHit.toWallpaper(): Wallpaper {
