@@ -149,6 +149,7 @@ object WallpaperRepository {
             sorting = category.sorting,
             categories = category.apiCategories,
             ratios = category.ratios,
+            atLeast = category.minResolution,
             page = page,
             topRange = if (category.sorting == "toplist") "1y" else null
         )

@@ -19,6 +19,8 @@ interface WallhavenApi {
         // 100 = SFW only
         @Query("purity") purity: String = "100",
         @Query("ratios") ratios: String = "portrait",
+        // Minimum size, e.g. "1080x1920": keeps every tab at Full HD or better
+        @Query("atleast") atLeast: String? = null,
         @Query("topRange") topRange: String? = null
     ): WallhavenResponse
 }
