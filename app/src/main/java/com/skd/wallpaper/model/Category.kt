@@ -30,6 +30,8 @@ data class Category(
     val tagQuery: String? = null,
     // Wallhaven aspect ratios to request; "portrait,landscape" where portrait-only is too scarce
     val ratios: String = "portrait",
+    // Smallest image size Wallhaven may return; Full HD portrait unless landscape is allowed too
+    val minResolution: String = if (ratios == "portrait") "1080x1920" else "1080x1080",
     // Use black-and-white photos if Wallhaven is down and Picsum is used instead
     val grayscaleFallback: Boolean = false,
     val isLiked: Boolean = false
